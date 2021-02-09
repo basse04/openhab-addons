@@ -157,8 +157,7 @@ public class SecondGenerationHandler extends BaseThingHandler {
         channelConfigsConfigurable = SecondGenerationChannelConfiguration.getChannelConfigurationConfigurable();
 
         // Set inverter configuration parameters
-        final SecondGenerationInverterConfig inverterConfig = getConfigAs(SecondGenerationInverterConfig.class);
-        this.inverterConfig = inverterConfig;
+        inverterConfig = getConfigAs(SecondGenerationInverterConfig.class);
 
         // Temporary value during initializing
         updateStatus(ThingStatus.UNKNOWN);

@@ -71,6 +71,6 @@
 		<properties>
 			<property name="vendor">KOSTAL Solar Electric GmbH</property>
 		</properties>
-		<config-description-ref uri="thing-type:kostalplenticorepikoiq_config"/>
+		<config-description-ref uri="thing-type:kostalplenticorepikoiq:config"/>
 	</thing-type>
 </thing:thing-descriptions>
