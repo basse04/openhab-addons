@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.ferroamp.internal;
+package org.openhab.binding.ferroamp.internal.config;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +18,7 @@ import java.util.List;
 import javax.measure.Unit;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.openhab.binding.ferroamp.internal.FerroampBindingConstants;
 import org.openhab.core.library.unit.Units;
 
 /**
