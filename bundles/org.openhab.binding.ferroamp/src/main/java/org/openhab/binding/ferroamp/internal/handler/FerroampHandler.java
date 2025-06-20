@@ -12,8 +12,6 @@
  */
 package org.openhab.binding.ferroamp.internal.handler;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ScheduledFuture;
@@ -25,7 +23,6 @@ import org.openhab.binding.ferroamp.internal.FerroampBindingConstants;
 import org.openhab.binding.ferroamp.internal.api.FerroampMqttCommunication;
 import org.openhab.binding.ferroamp.internal.config.ChannelMapping;
 import org.openhab.binding.ferroamp.internal.config.FerroampConfiguration;
-import org.openhab.core.io.transport.mqtt.MqttMessageSubscriber;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
@@ -47,10 +44,8 @@ import org.slf4j.LoggerFactory;
 @NonNullByDefault
 public class FerroampHandler extends BaseThingHandler {
     private final static Logger logger = LoggerFactory.getLogger(FerroampHandler.class);
-    private static List<ChannelMapping> channelConfigEhub = new ArrayList<>();
-    private @Nullable FerroampMqttCommunication ferroampMqttCommunication;
     private FerroampConfiguration ferroampConfig = new FerroampConfiguration();
-
+    private @Nullable FerroampMqttCommunication ferroampMqttCommunication;
     private @Nullable ScheduledFuture<?> pollTask;
 
     public FerroampHandler(Thing thing) {
@@ -85,16 +80,13 @@ public class FerroampHandler extends BaseThingHandler {
 
         String requestCommand = "{\"" + "transId" + "\":\"" + UUID.randomUUID().toString() + "\",\"cmd\":{\"name\":\""
                 + commandType + "\",\"arg\":\"" + command.toString() + "\"}}";
-        ferroampMqttCommunication.sendPublishedTopic(requestCommand, ferroampConfig);
+        ferroampMqttCommunication.sendPublishedTopic(requestCommand);
     }
 
     @Override
     public void initialize() {
         // Set configuration parameters
         ferroampConfig = getConfigAs(FerroampConfiguration.class);
-
-        // Set channel configuration parameters
-        channelConfigEhub = ChannelMapping.getChannelConfigurationEhub();
 
         if (ferroampConfig.hostName.isBlank() || ferroampConfig.password.isBlank()
                 || ferroampConfig.userName.isBlank()) {
@@ -103,7 +95,7 @@ public class FerroampHandler extends BaseThingHandler {
         }
         updateStatus(ThingStatus.UNKNOWN);
 
-        //TODO handle the case where user or pass is not valid
+        // TODO handle the case where user or pass is not valid
         ferroampMqttCommunication = new FerroampMqttCommunication(ferroampConfig.hostName, ferroampConfig.password,
                 ferroampConfig.hostName, FerroampBindingConstants.BROKER_PORT);
 
@@ -130,7 +122,7 @@ public class FerroampHandler extends BaseThingHandler {
 
         updateStatus(ThingStatus.ONLINE);
 
-        //TODO, MQTT is event driven, so it is a little weird to poll
+        // TODO, MQTT is event driven, so it is a little weird to poll
         try {
             channelUpdate();
         } catch (RuntimeException re) {
@@ -146,36 +138,32 @@ public class FerroampHandler extends BaseThingHandler {
             return;
         }
 
-        String[] ehubUpdateChannels;
-        ehubUpdateChannels = FerroampMqttCommunication.getEhubChannelUpdateValues();
-        if (ehubUpdateChannels.length > 0) {
-            int channelValuesCounterEhub = 0;
-            for (ChannelMapping cConfig : channelConfigEhub) {
-                String ehubChannel = cConfig.id;
-                State ehubState = StringType.valueOf(ehubUpdateChannels[channelValuesCounterEhub]);
-                updateState(ehubChannel, ehubState);
-                channelValuesCounterEhub++;
-            }
+        Map<String, @Nullable String> ehubKeyValueMap = ferroampMqttCommunication.ehubChannelsUpdateValues;
+        for (ChannelMapping mapping : ChannelMapping.getESOMapping()) {
+            State newState = StringType.valueOf(ehubKeyValueMap.get(mapping.jsonPath));
+            updateState(mapping.id, newState);
         }
 
+        // TODO the SSO need to have a consistent ordering of the SSO's (by some key?), so that the channel id's are
+        // always the same
         int ssoNumber = 4; // Number of SSO's
         for (int ssoIndex = 0; ssoIndex < ssoNumber; ssoNumber++) {
-            Map<String, @Nullable String> keyValueMap = ferroampMqttCommunication.getSsoChannelUpdateValues(ssoIndex);
+            Map<String, @Nullable String> keyValueMap = ferroampMqttCommunication.ssoChannelsUpdateValues[ssoIndex];
             for (ChannelMapping mapping : ChannelMapping.getSSOMapping()) {
-                State newState = StringType.valueOf(keyValueMap.get(mapping.jsonKey));
+                State newState = StringType.valueOf(keyValueMap.get(mapping.jsonPath));
                 updateState("sso-" + ssoIndex + 1 + "#" + mapping.id, newState);
             }
         }
 
-        Map<String, @Nullable String> esoKeyValueMap = ferroampMqttCommunication.getEsoChannelUpdateValues();
+        Map<String, @Nullable String> esoKeyValueMap = ferroampMqttCommunication.esoChannelsUpdateValues;
         for (ChannelMapping mapping : ChannelMapping.getESOMapping()) {
-            State newState = StringType.valueOf(esoKeyValueMap.get(mapping.jsonKey));
+            State newState = StringType.valueOf(esoKeyValueMap.get(mapping.jsonPath));
             updateState("eso#" + mapping.id, newState);
         }
 
-        Map<String, @Nullable String> esmKeyValueMap = ferroampMqttCommunication.getEsmChannelUpdateValues();
+        Map<String, @Nullable String> esmKeyValueMap = ferroampMqttCommunication.esmChannelsUpdateValues;
         for (ChannelMapping mapping : ChannelMapping.getESMMapping()) {
-            State newState = StringType.valueOf(esmKeyValueMap.get(mapping.jsonKey));
+            State newState = StringType.valueOf(esmKeyValueMap.get(mapping.jsonPath));
             updateState("esm#" + mapping.id, newState);
         }
     }
