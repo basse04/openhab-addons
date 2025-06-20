@@ -150,17 +150,17 @@ public class FerroampBindingConstants {
     public static final String CHANNEL_SSO_TIMESTAMP = "timestamp";
 
     // List of ESO Channel ids
-    public static final String CHANNEL_ESOID = "eso-id";
-    public static final String CHANNEL_ESOVOLTAGEBATTERY = "eso-voltage-battery";
-    public static final String CHANNEL_ESOCURRENTBATTERY = "eso-current-battery";
-    public static final String CHANNEL_ESOBATTERYENERGYPRODUCED = "eso-battery-energy-produced";
-    public static final String CHANNEL_ESOBATTERYENERGYCONSUMED = "eso-battery-energy-consumed";
-    public static final String CHANNEL_ESOSOC = "eso-soc";
-    public static final String CHANNEL_ESORELAYSTATUS = "eso-relay-status";
-    public static final String CHANNEL_ESOTEMPERATURE = "eso-temperature";
-    public static final String CHANNEL_ESOFAULTCODE = "eso-fault-code";
-    public static final String CHANNEL_ESODCLINKVOLTAGE = "eso-dc-link-voltage";
-    public static final String CHANNEL_ESOTIMESTAMP = "eso-timestamp";
+    public static final String CHANNEL_ESO_ID = "id";
+    public static final String CHANNEL_ESO_VOLTAGE_BATTERY = "voltage-battery";
+    public static final String CHANNEL_ESO_CURRENT_BATTERY = "current-battery";
+    public static final String CHANNEL_ESO_BATTERY_ENERGY_PRODUCED = "battery-energy-produced";
+    public static final String CHANNEL_ESO_BATTERY_ENERGY_CONSUMED = "battery-energy-consumed";
+    public static final String CHANNEL_ESO_SOC = "soc";
+    public static final String CHANNEL_ESO_RELAY_STATUS = "relay-status";
+    public static final String CHANNEL_ESO_TEMPERATURE = "temperature";
+    public static final String CHANNEL_ESO_FAULT_CODE = "fault-code";
+    public static final String CHANNEL_ESO_DC_LINK_VOLTAGE = "dc-link-voltage";
+    public static final String CHANNEL_ESO_TIMESTAMP = "timestamp";
 
     // List of ESM Channel ids
     public static final String CHANNEL_ESM_ID = "id";
@@ -172,9 +172,9 @@ public class FerroampBindingConstants {
     public static final String CHANNEL_ESM_TIMESTAMP = "timestamp";
 
     // List of all Channel ids for configuration
-    public static final String CHANNEL_REQUESTCHARGE = "request-charge";
-    public static final String CHANNEL_REQUESTDISCHARGE = "request-discharge";
-    public static final String CHANNEL_AUTO = "request-auto";
+    public static final String CHANNEL_REQUEST_CHARGE = "request-charge";
+    public static final String CHANNEL_REQUEST_DISCHARGE = "request-discharge";
+    public static final String CHANNEL_REQUEST_AUTO = "request-auto";
 
     public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Set.of(THING_TYPE_ENERGYHUB);
 }

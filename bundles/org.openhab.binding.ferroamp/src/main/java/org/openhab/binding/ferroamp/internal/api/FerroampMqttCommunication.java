@@ -49,10 +49,7 @@ public class FerroampMqttCommunication implements MqttMessageSubscriber {
 
     public Map<String, @Nullable String>[] ssoChannelsUpdateValues = new HashMap[9];
     public Map<String, @Nullable String> esmChannelsUpdateValues = new HashMap<>();
-
-    public static String[] esoChannelsUpdateValues = new String[0];
-
-    public static boolean isSsoChecked = false;
+    public Map<String, @Nullable String> esoChannelsUpdateValues = new HashMap<>();
 
     private final static Logger logger = LoggerFactory.getLogger(FerroampMqttCommunication.class);
 
@@ -99,7 +96,7 @@ public class FerroampMqttCommunication implements MqttMessageSubscriber {
             processIncomingJsonMessageSso(new String(payload, StandardCharsets.UTF_8));
         }
         if (FerroampBindingConstants.ESO_TOPIC.equals(topic)) {
-            processIncomingJsonMessageEso(topic, new String(payload, StandardCharsets.UTF_8));
+            processIncomingJsonMessageEso(new String(payload, StandardCharsets.UTF_8));
         }
         if (FerroampBindingConstants.ESM_TOPIC.equals(topic)) {
             processIncomingJsonMessageEsm(new String(payload, StandardCharsets.UTF_8));
@@ -368,26 +365,8 @@ public class FerroampMqttCommunication implements MqttMessageSubscriber {
     }
 
     // Prepare actual Json-topic Eso-message and update values for channels
-    void processIncomingJsonMessageEso(String topic, String messageJsonEso) {
-        String[] esoChannelPostsValue = new String[11]; // Array for ESO, Energy Storage Optimizer ) Posts
-        JsonObject jsonElementsObjectEso = new Gson().fromJson(new Gson().fromJson(messageJsonEso, JsonObject.class),
-                JsonObject.class);
-        Objects.requireNonNull(jsonElementsObjectEso, "JsonObject jsonElementsObjectEso cannot be null");
-        String jsonElementsStringTempEso = "";
-
-        if (!jsonElementsObjectEso.isEmpty()) {
-            int esoCounter = 0;
-            while (esoCounter <= 10) {
-                jsonElementsStringTempEso = jsonElementsObjectEso
-                        .get(EsoJsonElements.getJsonElementsEso().get(esoCounter)).toString();
-                esoChannelPostsValue[esoCounter] = GetGeneralValueHelperEso(jsonElementsStringTempEso,
-                        EsoJsonElements.getJsonElementsEso().get(esoCounter));
-                esoCounter++;
-            }
-            esoChannelsUpdateValues = esoChannelPostsValue;
-        } else {
-            return;
-        }
+    void processIncomingJsonMessageEso(String messageJsonEso) {
+        esoChannelsUpdateValues = extractKeyValuePairs(messageJsonEso, 0);
     }
 
     // Prepare actual Json-topic Esm-message and update values for channels
@@ -421,20 +400,6 @@ public class FerroampMqttCommunication implements MqttMessageSubscriber {
         return returnLxEhub;
     }
 
-    public String GetGeneralValueHelperEso(String jsonElementsStringEso, String esoParameterName) {
-        String returnValueEso = "";
-        GetGeneralValues objectEso = new Gson().fromJson(jsonElementsStringEso, GetGeneralValues.class);
-        if (objectEso != null) {
-            if (esoParameterName.equals(EsoJsonElements.getJsonElementsEso().get(3))
-                    || esoParameterName.equals(EsoJsonElements.getJsonElementsEso().get(4))) {
-                returnValueEso = mJTokWh(jsonStripOneLiners(objectEso.getVal().toString()));
-            } else {
-                returnValueEso = objectEso.getVal().toString();
-            }
-        }
-        return returnValueEso;
-    }
-
     public @Nullable static String[] getEhubChannelUpdateValues() {
         try {
             return ehubChannelsUpdateValues;
@@ -453,13 +418,13 @@ public class FerroampMqttCommunication implements MqttMessageSubscriber {
         return new HashMap<>();
     }
 
-    public @Nullable static String[] getEsoChannelUpdateValues() {
+    public Map<String, @Nullable String> getEsoChannelUpdateValues() {
         try {
             return esoChannelsUpdateValues;
         } catch (Exception e) {
             logger.debug("Failed at update of Eso channel values");
         }
-        return esoChannelsUpdateValues;
+        return new HashMap<>();
     }
 
     public Map<String, @Nullable String> getEsmChannelUpdateValues() {

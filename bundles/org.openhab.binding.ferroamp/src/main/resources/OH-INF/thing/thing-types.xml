@@ -267,6 +267,7 @@
 			<channel id="total-capacity-batteries" typeId="energy">
 				<label>Tot. Rated Cap. Batt.</label>
 			</channel>
+
 			<channel-group id="sso-1" typeId="sso">
 				<label>SSO 1</label>
 			</channel-group>
@@ -283,39 +284,9 @@
 				<label>ESM</label>
 			</channel-group>
 
-			<channel id="eso-id" typeId="string">
-				<label>Eso Identifier</label>
-			</channel>
-			<channel id="eso-voltage-battery" typeId="electric-potential">
-				<label>Eso Voltage, Battery</label>
-			</channel>
-			<channel id="eso-current-battery" typeId="electric-current">
-				<label>Eso Current, Battery</label>
-			</channel>
-			<channel id="eso-battery-energy-produced" typeId="energy">
-				<label>Eso Batt. Energy Prod.</label>
-			</channel>
-			<channel id="eso-battery-energy-consumed" typeId="energy">
-				<label>Eso Batt. Energy Cons.</label>
-			</channel>
-			<channel id="eso-soc" typeId="percentage">
-				<label>Eso SoC</label>
-			</channel>
-			<channel id="eso-relay-status" typeId="string">
-				<label>Eso RelayStatus</label>
-			</channel>
-			<channel id="eso-temperature" typeId="temperature">
-				<label>ESO Temperature, PCB</label>
-			</channel>
-			<channel id="eso-fault-code" typeId="string">
-				<label>Eso FaultCode</label>
-			</channel>
-			<channel id="eso-dc-link-voltage" typeId="electric-potential">
-				<label>Eso DC Link Voltage</label>
-			</channel>
-			<channel id="eso-timestamp" typeId="date-time">
-				<label>Eso Published Time</label>
-			</channel>
+			<channel-group id="eso" typeId="eso">
+				<label>ESO</label>
+			</channel-group>
 
 			<channel id="request-charge" typeId="request">
 				<label>RequestCharge</label>
@@ -417,6 +388,45 @@
 				<label>Published Time</label>
 			</channel>
 		</channels>
+	</channel-group-type>
+
+	<channel-group-type id="eso">
+		<label>ESO</label>
+		<description>This is a group of ESO channels</description>
+		<channel id="id" typeId="string">
+			<label>Identifier</label>
+		</channel>
+		<channel id="voltage-battery" typeId="electric-potential">
+			<label>Voltage, Battery</label>
+		</channel>
+		<channel id="current-battery" typeId="electric-current">
+			<label>Current, Battery</label>
+		</channel>
+		<channel id="battery-energy-produced" typeId="energy">
+			<label>Batt. Energy Prod.</label>
+		</channel>
+		<channel id="battery-energy-consumed" typeId="energy">
+			<label>Batt. Energy Cons.</label>
+		</channel>
+		<channel id="soc" typeId="percentage">
+			<label>SoC</label>
+		</channel>
+		<channel id="relay-status" typeId="string">
+			<label>RelayStatus</label>
+		</channel>
+		<channel id="temperature" typeId="temperature">
+			<label>Temperature, PCB</label>
+		</channel>
+		<channel id="fault-code" typeId="string">
+			<label>FaultCode</label>
+		</channel>
+		<channel id="dc-link-voltage" typeId="electric-potential">
+			<label>DC Link Voltage</label>
+		</channel>
+		<channel id="timestamp" typeId="date-time">
+			<label>Published Time</label>
+		</channel>
+	</channels>
 	</channel-group-type>
 
 	<channel-type id="energy">
