@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.ferroamp.internal;
+package org.openhab.binding.ferroamp.internal.config;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 

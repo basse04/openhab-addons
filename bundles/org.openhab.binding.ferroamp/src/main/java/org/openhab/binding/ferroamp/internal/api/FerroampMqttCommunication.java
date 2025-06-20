@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.ferroamp.internal;
+package org.openhab.binding.ferroamp.internal.api;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -20,6 +20,9 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.ferroamp.dto.GetGeneralLx;
 import org.openhab.binding.ferroamp.dto.GetGeneralValues;
 import org.openhab.binding.ferroamp.dto.GetUdc;
+import org.openhab.binding.ferroamp.internal.FerroampBindingConstants;
+import org.openhab.binding.ferroamp.internal.config.FerroampConfiguration;
+import org.openhab.binding.ferroamp.internal.handler.FerroampHandler;
 import org.openhab.core.io.transport.mqtt.MqttBrokerConnection;
 import org.openhab.core.io.transport.mqtt.MqttMessageSubscriber;
 import org.slf4j.Logger;
@@ -58,7 +61,7 @@ public class FerroampMqttCommunication implements MqttMessageSubscriber {
     }
 
     // Handles request topic
-    static void sendPublishedTopic(String payload, FerroampConfiguration ferroampConfig) {
+    public static void sendPublishedTopic(String payload, FerroampConfiguration ferroampConfig) {
         MqttBrokerConnection localConfigurationConnection = FerroampHandler.getFerroampConnection();
         Objects.requireNonNull(localConfigurationConnection,
                 "MqttBrokerConnection localConfigurationConnection cannot be null");
@@ -68,7 +71,7 @@ public class FerroampMqttCommunication implements MqttMessageSubscriber {
     }
 
     // Handles respective topic type
-    void getSubscribedTopic(String topic, FerroampConfiguration ferroampConfig) {
+    public void getSubscribedTopic(String topic, FerroampConfiguration ferroampConfig) {
         MqttBrokerConnection localSubscribeConnection = FerroampHandler.getFerroampConnection();
         Objects.requireNonNull(localSubscribeConnection,
                 "MqttBrokerConnection localSubscribeConnection cannot be null");

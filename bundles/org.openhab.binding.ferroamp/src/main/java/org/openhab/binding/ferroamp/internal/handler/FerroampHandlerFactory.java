@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.ferroamp.internal;
+package org.openhab.binding.ferroamp.internal.handler;
 
 import static org.openhab.binding.ferroamp.internal.FerroampBindingConstants.THING_TYPE_ENERGYHUB;
 

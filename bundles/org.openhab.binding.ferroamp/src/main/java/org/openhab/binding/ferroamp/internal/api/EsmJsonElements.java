@@ -11,7 +11,7 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 
-package org.openhab.binding.ferroamp.internal;
+package org.openhab.binding.ferroamp.internal.api;
 
 import java.util.ArrayList;
 import java.util.List;

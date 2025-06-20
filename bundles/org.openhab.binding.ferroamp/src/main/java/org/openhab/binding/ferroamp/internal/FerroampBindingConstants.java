@@ -30,7 +30,7 @@ public class FerroampBindingConstants {
     public static final String BINDING_ID = "ferroamp";
 
     // Broker (energyhub) port number
-    static final int BROKER_PORT = 1883;
+    public static final int BROKER_PORT = 1883;
 
     // Broker (energyhub) status
     public static final String CONNECTED = "connected";

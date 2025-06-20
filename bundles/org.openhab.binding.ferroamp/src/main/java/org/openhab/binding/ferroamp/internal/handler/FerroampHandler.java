@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.ferroamp.internal;
+package org.openhab.binding.ferroamp.internal.handler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +21,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.openhab.binding.ferroamp.internal.FerroampBindingConstants;
+import org.openhab.binding.ferroamp.internal.api.FerroampMqttCommunication;
+import org.openhab.binding.ferroamp.internal.config.FerroampChannelConfiguration;
+import org.openhab.binding.ferroamp.internal.config.FerroampConfiguration;
 import org.openhab.core.io.transport.mqtt.MqttBrokerConnection;
 import org.openhab.core.io.transport.mqtt.MqttMessageSubscriber;
 import org.openhab.core.library.types.StringType;
