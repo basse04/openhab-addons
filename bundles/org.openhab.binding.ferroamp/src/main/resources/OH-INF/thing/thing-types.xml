@@ -299,6 +299,8 @@
 			</channel>
 		</channels>
 
+		<representation-property>hostName</representation-property>
+
 		<config-description>
 			<parameter name="hostName" type="text" required="true">
 				<context>network-address</context>
