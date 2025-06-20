@@ -33,7 +33,6 @@ public class FerroampChannelConfiguration {
     public static final String id = "";
 
     public FerroampChannelConfiguration(String id, Unit<?> unit) {
-
     }
 
     private static FerroampChannelConfiguration cc(String id, Unit<?> unit) {
