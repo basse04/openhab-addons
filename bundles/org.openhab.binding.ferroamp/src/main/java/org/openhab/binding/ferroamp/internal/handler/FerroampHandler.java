@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
 public class FerroampHandler extends BaseThingHandler implements MqttMessageSubscriber {
     private final static Logger logger = LoggerFactory.getLogger(FerroampHandler.class);
     private @Nullable static MqttBrokerConnection ferroampConnection;
-    FerroampMqttCommunication ferroampMqttCommunication = new FerroampMqttCommunication(thing);
+    FerroampMqttCommunication ferroampMqttCommunication = new FerroampMqttCommunication();
     FerroampConfiguration ferroampConfig = new FerroampConfiguration();
 
     private static List<FerroampChannelConfiguration> channelConfigEhub = new ArrayList<>();
