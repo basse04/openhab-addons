@@ -39,45 +39,35 @@ class FerroampMqttCommunicationTest {
     @Test
     @Disabled
     void testProcessIncomingJsonMessageSso_ValidMessageForSso1() throws IOException {
-        String topic = "test/topic";
         String messageJsonSso = DataUtil.fromFile("sso.json");
 
-        communication.ssoS1IdCheck = "sso1";
+        communication.processIncomingJsonMessageSso(messageJsonSso);
 
-        communication.processIncomingJsonMessageSso(topic, messageJsonSso);
-
-        assertNotNull(communication.ssoS1ChannelsUpdateValues);
-        assertEquals(9, communication.ssoS1ChannelsUpdateValues.length);
-        assertEquals("value1", communication.ssoS1ChannelsUpdateValues[0]);
+        assertNotNull(communication.ssoChannelsUpdateValues);
+        assertEquals(9, communication.ssoChannelsUpdateValues.length);
+        assertEquals("value1", communication.ssoChannelsUpdateValues[0]);
     }
 
     @Test
     @Disabled
     void testProcessIncomingJsonMessageSso_InvalidMessage() {
-        String topic = "test/topic";
         String messageJsonSso = "{}";
 
-        communication.processIncomingJsonMessageSso(topic, messageJsonSso);
+        communication.processIncomingJsonMessageSso(messageJsonSso);
 
-        assertNull(communication.ssoS1ChannelsUpdateValues);
-        assertNull(communication.ssoS2ChannelsUpdateValues);
-        assertNull(communication.ssoS3ChannelsUpdateValues);
-        assertNull(communication.ssoS4ChannelsUpdateValues);
+        assertNull(communication.ssoChannelsUpdateValues);
     }
 
     @Test
     @Disabled
     void testProcessIncomingJsonMessageSso_ValidMessageForSso2() {
-        String topic = "test/topic";
         String messageJsonSso = createValidSsoMessage("sso2");
 
-        communication.ssoS2IdCheck = "sso2";
+        communication.processIncomingJsonMessageSso(messageJsonSso);
 
-        communication.processIncomingJsonMessageSso(topic, messageJsonSso);
-
-        assertNotNull(communication.ssoS2ChannelsUpdateValues);
-        assertEquals(9, communication.ssoS2ChannelsUpdateValues.length);
-        assertEquals("value1", communication.ssoS2ChannelsUpdateValues[0]);
+        assertNotNull(communication.ssoChannelsUpdateValues);
+        assertEquals(9, communication.ssoChannelsUpdateValues.length);
+        assertEquals("value1", communication.ssoChannelsUpdateValues[0]);
     }
 
     private String createValidSsoMessage(String ssoId) {
