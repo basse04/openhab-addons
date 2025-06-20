@@ -22,7 +22,6 @@ import org.openhab.binding.ferroamp.dto.GetGeneralValues;
 import org.openhab.binding.ferroamp.dto.GetUdc;
 import org.openhab.core.io.transport.mqtt.MqttBrokerConnection;
 import org.openhab.core.io.transport.mqtt.MqttMessageSubscriber;
-import org.openhab.core.thing.Thing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,23 +37,23 @@ import com.google.gson.JsonObject;
 
 @NonNullByDefault
 public class FerroampMqttCommunication implements MqttMessageSubscriber {
-    static String[] ehubChannelsUpdateValues = new String[0];
-    static String[] ssoS1ChannelsUpdateValues = new String[0];
-    static String[] ssoS2ChannelsUpdateValues = new String[0];
-    static String[] ssoS3ChannelsUpdateValues = new String[0];
-    static String[] ssoS4ChannelsUpdateValues = new String[0];
-    static String[] esoChannelsUpdateValues = new String[0];
-    static String[] esmChannelsUpdateValues = new String[0];
+    public static String[] ehubChannelsUpdateValues = new String[0];
+    public static String[] ssoS1ChannelsUpdateValues = new String[0];
+    public static String[] ssoS2ChannelsUpdateValues = new String[0];
+    public static String[] ssoS3ChannelsUpdateValues = new String[0];
+    public static String[] ssoS4ChannelsUpdateValues = new String[0];
+    public static String[] esoChannelsUpdateValues = new String[0];
+    public static String[] esmChannelsUpdateValues = new String[0];
 
-    static boolean isSsoChecked = false;
-    static String ssoS1IdCheck = "";
-    static String ssoS2IdCheck = "";
-    static String ssoS3IdCheck = "";
-    static String ssoS4IdCheck = "";
+    public static boolean isSsoChecked = false;
+    public static String ssoS1IdCheck = "";
+    public static String ssoS2IdCheck = "";
+    public static String ssoS3IdCheck = "";
+    public static String ssoS4IdCheck = "";
 
     private final static Logger logger = LoggerFactory.getLogger(FerroampMqttCommunication.class);
 
-    public FerroampMqttCommunication(Thing thing) {
+    public FerroampMqttCommunication() {
         super();
     }
 
@@ -105,7 +104,7 @@ public class FerroampMqttCommunication implements MqttMessageSubscriber {
     }
 
     // Prepare actual Json-topic Ehub-message and update values for channels
-    void processIncomingJsonMessageEhub(String topic, String messageJsonEhub) {
+    public void processIncomingJsonMessageEhub(String topic, String messageJsonEhub) {
         String[] ehubChannelPostsValue = new String[86]; // Array for EHUB (Energy Hub) Posts
         JsonObject jsonElementsObject = new Gson().fromJson(messageJsonEhub, JsonObject.class);
         Objects.requireNonNull(jsonElementsObject, "JsonObject jsonElementsObject cannot be null");
@@ -346,7 +345,7 @@ public class FerroampMqttCommunication implements MqttMessageSubscriber {
     }
 
     // Prepare actual Json-topic Sso-messages and update values for channels
-    void processIncomingJsonMessageSso(String topic, String messageJsonSso) {
+    public void processIncomingJsonMessageSso(String topic, String messageJsonSso) {
         String[] ssoS1ChannelPostsValue = new String[9]; // Array for SSOS1 ( Solar String Optimizer ) Posts
         String[] ssoS2ChannelPostsValue = new String[9]; // Array for SSOS2 ( Solar String Optimizer ) Posts
         String[] ssoS3ChannelPostsValue = new String[9]; // Array for SSOS3 ( Solar String Optimizer ) Posts
