@@ -34,111 +34,106 @@ public class ChannelMapping {
 
     public String id = "";
     public Unit<?> unit = Units.ONE;
-    public String jsonKey = "";
+    public String jsonPath = "";
 
-    public ChannelMapping(String id, Unit<?> unit, String jsonKey) {
+    public ChannelMapping(String id, Unit<?> unit, String jsonPath) {
         this.id = id;
         this.unit = unit;
-        this.jsonKey = jsonKey;
+        this.jsonPath = jsonPath;
     }
 
-    private static ChannelMapping cc(String id, Unit<?> unit) {
-        return new ChannelMapping(id, unit, "");
-    }
-
-    private static ChannelMapping cc(String id, Unit<?> unit, String jsonKey) {
-        return new ChannelMapping(id, unit, jsonKey);
+    private static ChannelMapping cc(String id, Unit<?> unit, String jsonPath) {
+        return new ChannelMapping(id, unit, jsonPath);
     }
 
     public static List<ChannelMapping> getChannelConfigurationEhub() {
         final List<ChannelMapping> list = new ArrayList<>();
-
-        list.add(cc(CHANNEL_GRIDFREQUENCY, Units.HERTZ));
-        list.add(cc(CHANNEL_ACECURRENTL1, Units.AMPERE));
-        list.add(cc(CHANNEL_ACECURRENTL2, Units.AMPERE));
-        list.add(cc(CHANNEL_ACECURRENTL3, Units.AMPERE));
-        list.add(cc(CHANNEL_GRIDVOLTAGEL1, Units.VOLT));
-        list.add(cc(CHANNEL_GRIDVOLTAGEL2, Units.VOLT));
-        list.add(cc(CHANNEL_GRIDVOLTAGEL3, Units.VOLT));
-        list.add(cc(CHANNEL_INVERTERRMSCURRENTL1, Units.AMPERE));
-        list.add(cc(CHANNEL_INVERTERRMSCURRENTL2, Units.AMPERE));
-        list.add(cc(CHANNEL_INVERTERRMSCURRENTL3, Units.AMPERE));
-        list.add(cc(CHANNEL_INVERTERREACTIVECURRENTL1, Units.AMPERE));
-        list.add(cc(CHANNEL_INVERTERREACTIVECURRENTL2, Units.AMPERE));
-        list.add(cc(CHANNEL_INVERTERREACTIVECURRENTL3, Units.AMPERE));
-        list.add(cc(CHANNEL_INVERTERACTIVECURRENTL1, Units.AMPERE));
-        list.add(cc(CHANNEL_INVERTERACTIVECURRENTL2, Units.AMPERE));
-        list.add(cc(CHANNEL_INVERTERACTIVECURRENTL3, Units.AMPERE));
-        list.add(cc(CHANNEL_GRIDCURRENTL1, Units.AMPERE));
-        list.add(cc(CHANNEL_GRIDCURRENTL2, Units.AMPERE));
-        list.add(cc(CHANNEL_GRIDCURRENTL3, Units.AMPERE));
-        list.add(cc(CHANNEL_GRIDREACTIVECURRENTL1, Units.AMPERE));
-        list.add(cc(CHANNEL_GRIDREACTIVECURRENTL2, Units.AMPERE));
-        list.add(cc(CHANNEL_GRIDREACTIVECURRENTL3, Units.AMPERE));
-        list.add(cc(CHANNEL_GRIDACTIVECURRENTL1, Units.AMPERE));
-        list.add(cc(CHANNEL_GRIDACTIVECURRENTL2, Units.AMPERE));
-        list.add(cc(CHANNEL_GRIDACTIVECURRENTL3, Units.AMPERE));
-        list.add(cc(CHANNEL_INVERTERLOADREACTIVECURRENTL1, Units.AMPERE));
-        list.add(cc(CHANNEL_INVERTERLOADREACTIVECURRENTL2, Units.AMPERE));
-        list.add(cc(CHANNEL_INVERTERLOADREACTIVECURRENTL3, Units.AMPERE));
-        list.add(cc(CHANNEL_INVERTERLOADACTIVECURRENTL1, Units.AMPERE));
-        list.add(cc(CHANNEL_INVERTERLOADACTIVECURRENTL2, Units.AMPERE));
-        list.add(cc(CHANNEL_INVERTERLOADACTIVECURRENTL3, Units.AMPERE));
-        list.add(cc(CHANNEL_APPARENTPOWER, Units.WATT));
-        list.add(cc(CHANNEL_GRIDPOWERACTIVEL1, Units.AMPERE));
-        list.add(cc(CHANNEL_GRIDPOWERACTIVEL2, Units.AMPERE));
-        list.add(cc(CHANNEL_GRIDPOWERACTIVEL3, Units.AMPERE));
-        list.add(cc(CHANNEL_GRIDPOWERREACTIVEL1, Units.WATT));
-        list.add(cc(CHANNEL_GRIDPOWERREACTIVEL2, Units.WATT));
-        list.add(cc(CHANNEL_GRIDPOWERREACTIVEL3, Units.WATT));
-        list.add(cc(CHANNEL_INVERTERPOWERACTIVEL1, Units.VOLT));
-        list.add(cc(CHANNEL_INVERTERPOWERACTIVEL2, Units.VOLT));
-        list.add(cc(CHANNEL_INVERTERPOWERACTIVEL3, Units.VOLT));
-        list.add(cc(CHANNEL_INVERTERPOWERREACTIVEL1, Units.VOLT));
-        list.add(cc(CHANNEL_INVERTERPOWERREACTIVEL2, Units.VOLT));
-        list.add(cc(CHANNEL_INVERTERPOWERREACTIVEL3, Units.VOLT));
-        list.add(cc(CHANNEL_CONSUMPTIONPOWERL1, Units.WATT));
-        list.add(cc(CHANNEL_CONSUMPTIONPOWERL2, Units.WATT));
-        list.add(cc(CHANNEL_CONSUMPTIONPOWERL3, Units.WATT));
-        list.add(cc(CHANNEL_CONSUMPTIONPOWERREACTIVEL1, Units.WATT));
-        list.add(cc(CHANNEL_CONSUMPTIONPOWERREACTIVEL2, Units.WATT));
-        list.add(cc(CHANNEL_CONSUMPTIONPOWERREACTIVEL3, Units.WATT));
-        list.add(cc(CHANNEL_SOLARPV, Units.WATT));
-        list.add(cc(CHANNEL_POSITIVEDCLINKVOLTAGE, Units.VOLT));
-        list.add(cc(CHANNEL_NEGATIVEDCLINKVOLTAGE, Units.VOLT));
-        list.add(cc(CHANNEL_GRIDENERGYPRODUCEDL1, Units.WATT));
-        list.add(cc(CHANNEL_GRIDENERGYPRODUCEDL2, Units.WATT));
-        list.add(cc(CHANNEL_GRIDENERGYPRODUCEDL3, Units.WATT));
-        list.add(cc(CHANNEL_GRIDENERGYCONSUMEDL1, Units.WATT));
-        list.add(cc(CHANNEL_GRIDENERGYCONSUMEDL2, Units.WATT));
-        list.add(cc(CHANNEL_GRIDENERGYCONSUMEDL3, Units.WATT));
-        list.add(cc(CHANNEL_INVERTERENERGYPRODUCEDL1, Units.WATT));
-        list.add(cc(CHANNEL_INVERTERENERGYPRODUCEDL2, Units.WATT));
-        list.add(cc(CHANNEL_INVERTERENERGYPRODUCEDL3, Units.WATT));
-        list.add(cc(CHANNEL_INVERTERENERGYCONSUMEDL1, Units.WATT));
-        list.add(cc(CHANNEL_INVERTERENERGYCONSUMEDL2, Units.WATT));
-        list.add(cc(CHANNEL_INVERTERENERGYCONSUMEDL3, Units.WATT));
-        list.add(cc(CHANNEL_LOADENERGYPRODUCEDL1, Units.WATT));
-        list.add(cc(CHANNEL_LOADENERGYPRODUCEDL2, Units.WATT));
-        list.add(cc(CHANNEL_LOADENERGYPRODUCEDL3, Units.WATT));
-        list.add(cc(CHANNEL_LOADENERGYCONSUMEDL1, Units.WATT));
-        list.add(cc(CHANNEL_LOADENERGYCONSUMEDL2, Units.WATT));
-        list.add(cc(CHANNEL_LOADENERGYCONSUMEDL3, Units.WATT));
-        list.add(cc(CHANNEL_GRIDENERGYPRODUCEDTOTAL, Units.WATT));
-        list.add(cc(CHANNEL_GRIDENERGYCONSUMEDTOTAL, Units.WATT));
-        list.add(cc(CHANNEL_INVERTERENERGYPRODUCEDTOTAL, Units.WATT));
-        list.add(cc(CHANNEL_INVERTERENERGYCONSUMEDTOTAL, Units.WATT));
-        list.add(cc(CHANNEL_LOADENERGYPRODUCEDTOTAL, Units.WATT));
-        list.add(cc(CHANNEL_LOADENERGYCONSUMEDTOTAL, Units.WATT));
-        list.add(cc(CHANNEL_TOTALSOLARENERGY, Units.WATT));
-        list.add(cc(CHANNEL_STATE, Units.ONE));
-        list.add(cc(CHANNEL_TIMESTAMP, Units.ONE));
-        list.add(cc(CHANNEL_BATTERYENERGYPRODUCED, Units.WATT));
-        list.add(cc(CHANNEL_BATTERYENERGYCONSUMED, Units.WATT));
-        list.add(cc(CHANNEL_SOC, Units.PERCENT));
-        list.add(cc(CHANNEL_SOH, Units.PERCENT));
-        list.add(cc(CHANNEL_POWERBATTERY, Units.WATT));
-        list.add(cc(CHANNEL_TOTALCAPACITYBATTERIES, Units.WATT_HOUR));
+        list.add(cc(CHANNEL_GRID_FREQUENCY, Units.HERTZ, "gridfreq"));
+        list.add(cc(CHANNEL_ACE_CURRENT_L1, Units.AMPERE, "iace.L1"));
+        list.add(cc(CHANNEL_ACE_CURRENT_L2, Units.AMPERE, "iace.L2"));
+        list.add(cc(CHANNEL_ACE_CURRENT_L3, Units.AMPERE, "iace.L3"));
+        list.add(cc(CHANNEL_GRID_VOLTAGE_L1, Units.VOLT, "ul.L1"));
+        list.add(cc(CHANNEL_GRID_VOLTAGE_L2, Units.VOLT, "ul.L2"));
+        list.add(cc(CHANNEL_GRID_VOLTAGE_L3, Units.VOLT, "ul.L3"));
+        list.add(cc(CHANNEL_INVERTER_RMS_CURRENT_L1, Units.AMPERE, "il.L1"));
+        list.add(cc(CHANNEL_INVERTER_RMS_CURRENT_L2, Units.AMPERE, "il.L2"));
+        list.add(cc(CHANNEL_INVERTER_RMS_CURRENT_L3, Units.AMPERE, "il.L3"));
+        list.add(cc(CHANNEL_INVERTER_REACTIVE_CURRENT_L1, Units.AMPERE, "ild.L1"));
+        list.add(cc(CHANNEL_INVERTER_REACTIVE_CURRENT_L2, Units.AMPERE, "ild.L2"));
+        list.add(cc(CHANNEL_INVERTER_REACTIVE_CURRENT_L3, Units.AMPERE, "ild.L3"));
+        list.add(cc(CHANNEL_INVERTER_ACTIVE_CURRENT_L1, Units.AMPERE, "ilq.L1"));
+        list.add(cc(CHANNEL_INVERTER_ACTIVE_CURRENT_L2, Units.AMPERE, "ilq.L2"));
+        list.add(cc(CHANNEL_INVERTER_ACTIVE_CURRENT_L3, Units.AMPERE, "ilq.L3"));
+        list.add(cc(CHANNEL_GRID_CURRENT_L1, Units.AMPERE, "iext.L1"));
+        list.add(cc(CHANNEL_GRID_CURRENT_L2, Units.AMPERE, "iext.L2"));
+        list.add(cc(CHANNEL_GRID_CURRENT_L3, Units.AMPERE, "iext.L3"));
+        list.add(cc(CHANNEL_GRID_REACTIVE_CURRENT_L1, Units.AMPERE, "iextd.L1"));
+        list.add(cc(CHANNEL_GRID_REACTIVE_CURRENT_L2, Units.AMPERE, "iextd.L2"));
+        list.add(cc(CHANNEL_GRID_REACTIVE_CURRENT_L3, Units.AMPERE, "iextd.L3"));
+        list.add(cc(CHANNEL_GRID_ACTIVE_CURRENT_L1, Units.AMPERE, "iextq.L1"));
+        list.add(cc(CHANNEL_GRID_ACTIVE_CURRENT_L2, Units.AMPERE, "iextq.L2"));
+        list.add(cc(CHANNEL_GRID_ACTIVE_CURRENT_L3, Units.AMPERE, "iextq.L3"));
+        list.add(cc(CHANNEL_INVERTER_LOAD_REACTIVE_CURRENT_L1, Units.AMPERE, "iloadd.L1"));
+        list.add(cc(CHANNEL_INVERTER_LOAD_REACTIVE_CURRENT_L2, Units.AMPERE, "iloadd.L2"));
+        list.add(cc(CHANNEL_INVERTER_LOAD_REACTIVE_CURRENT_L3, Units.AMPERE, "iloadd.L3"));
+        list.add(cc(CHANNEL_INVERTER_LOAD_ACTIVE_CURRENT_L1, Units.AMPERE, "iloadq.L1"));
+        list.add(cc(CHANNEL_INVERTER_LOAD_ACTIVE_CURRENT_L2, Units.AMPERE, "iloadq.L2"));
+        list.add(cc(CHANNEL_INVERTER_LOAD_ACTIVE_CURRENT_L3, Units.AMPERE, "iloadq.L3"));
+        list.add(cc(CHANNEL_APPARENT_POWER, Units.WATT, "sext"));
+        list.add(cc(CHANNEL_GRID_POWER_ACTIVE_L1, Units.AMPERE, "pext.L1"));
+        list.add(cc(CHANNEL_GRID_POWER_ACTIVE_L2, Units.AMPERE, "pext.L2"));
+        list.add(cc(CHANNEL_GRID_POWER_ACTIVE_L3, Units.AMPERE, "pext.L3"));
+        list.add(cc(CHANNEL_GRID_POWER_REACTIVE_L1, Units.WATT, "pextreactive.L1"));
+        list.add(cc(CHANNEL_GRID_POWER_REACTIVE_L2, Units.WATT, "pextreactive.L2"));
+        list.add(cc(CHANNEL_GRID_POWER_REACTIVE_L3, Units.WATT, "pextreactive.L3"));
+        list.add(cc(CHANNEL_INVERTER_POWER_ACTIVE_L1, Units.VOLT, "pinv.L1"));
+        list.add(cc(CHANNEL_INVERTER_POWER_ACTIVE_L2, Units.VOLT, "pinv.L2"));
+        list.add(cc(CHANNEL_INVERTER_POWER_ACTIVE_L3, Units.VOLT, "pinv.L3"));
+        list.add(cc(CHANNEL_INVERTER_POWER_REACTIVE_L1, Units.VOLT, "pinvreactive.L1"));
+        list.add(cc(CHANNEL_INVERTER_POWER_REACTIVE_L2, Units.VOLT, "pinvreactive.L2"));
+        list.add(cc(CHANNEL_INVERTER_POWER_REACTIVE_L3, Units.VOLT, "pinvreactive.L3"));
+        list.add(cc(CHANNEL_CONSUMPTION_POWER_L1, Units.WATT, "pload.L1"));
+        list.add(cc(CHANNEL_CONSUMPTION_POWER_L2, Units.WATT, "pload.L2"));
+        list.add(cc(CHANNEL_CONSUMPTION_POWER_L3, Units.WATT, "pload.L3"));
+        list.add(cc(CHANNEL_CONSUMPTION_POWER_REACTIVE_L1, Units.WATT, "ploadreactive.L1"));
+        list.add(cc(CHANNEL_CONSUMPTION_POWER_REACTIVE_L2, Units.WATT, "ploadreactive.L2"));
+        list.add(cc(CHANNEL_CONSUMPTION_POWER_REACTIVE_L3, Units.WATT, "ploadreactive.L3"));
+        list.add(cc(CHANNEL_SOLAR_PV, Units.WATT, "ppv"));
+        list.add(cc(CHANNEL_POSITIVE_DC_LINK_VOLTAGE, Units.VOLT, "udc.pos"));
+        list.add(cc(CHANNEL_NEGATIVE_DC_LINK_VOLTAGE, Units.VOLT, "udc.neg"));
+        list.add(cc(CHANNEL_GRID_ENERGY_PRODUCED_L1, Units.WATT, "wextprodq.L1")); // unit multiplyer
+        list.add(cc(CHANNEL_GRID_ENERGY_PRODUCED_L2, Units.WATT, "wextprodq.L2")); // unit multiplyer
+        list.add(cc(CHANNEL_GRID_ENERGY_PRODUCED_L3, Units.WATT, "wextprodq.L3")); // unit multiplyer
+        list.add(cc(CHANNEL_GRID_ENERGY_CONSUMED_L1, Units.WATT, "wextconsq.L1")); // unit multiplyer
+        list.add(cc(CHANNEL_GRID_ENERGY_CONSUMED_L2, Units.WATT, "wextconsq.L2")); // unit multiplyer
+        list.add(cc(CHANNEL_GRID_ENERGY_CONSUMED_L3, Units.WATT, "wextconsq.L3")); // unit multiplyer
+        list.add(cc(CHANNEL_INVERTER_ENERGY_PRODUCED_L1, Units.WATT, "winvprodq.L1")); // unit multiplyer
+        list.add(cc(CHANNEL_INVERTER_ENERGY_PRODUCED_L2, Units.WATT, "winvprodq.L2")); // unit multiplyer
+        list.add(cc(CHANNEL_INVERTER_ENERGY_PRODUCED_L3, Units.WATT, "winvprodq.L3")); // unit multiplyer
+        list.add(cc(CHANNEL_INVERTER_ENERGY_CONSUMED_L1, Units.WATT, "winvconsq.L1")); // unit multiplyer
+        list.add(cc(CHANNEL_INVERTER_ENERGY_CONSUMED_L2, Units.WATT, "winvconsq.L2")); // unit multiplyer
+        list.add(cc(CHANNEL_INVERTER_ENERGY_CONSUMED_L3, Units.WATT, "winvconsq.L3")); // unit multiplyer
+        list.add(cc(CHANNEL_LOAD_ENERGY_PRODUCED_L1, Units.WATT, "wloadprodq.L1")); // unit multiplyer
+        list.add(cc(CHANNEL_LOAD_ENERGY_PRODUCED_L2, Units.WATT, "wloadprodq.L2")); // unit multiplyer
+        list.add(cc(CHANNEL_LOAD_ENERGY_PRODUCED_L3, Units.WATT, "wloadprodq.L3")); // unit multiplyer
+        list.add(cc(CHANNEL_LOAD_ENERGY_CONSUMED_L1, Units.WATT, "wloadconsq.L1")); // unit multiplyer
+        list.add(cc(CHANNEL_LOAD_ENERGY_CONSUMED_L2, Units.WATT, "wloadconsq.L2")); // unit multiplyer
+        list.add(cc(CHANNEL_LOAD_ENERGY_CONSUMED_L3, Units.WATT, "wloadconsq.L3")); // unit multiplyer
+        list.add(cc(CHANNEL_GRID_ENERGY_PRODUCED_TOTAL, Units.WATT, "wextprodq_3p")); // unit multiplyer
+        list.add(cc(CHANNEL_GRID_ENERGY_CONSUMED_TOTAL, Units.WATT, "wextconsq_3p")); // unit multiplyer
+        list.add(cc(CHANNEL_INVERTER_ENERGY_PRODUCED_TOTAL, Units.WATT, "winvprodq_3p")); // unit multiplyer
+        list.add(cc(CHANNEL_INVERTER_ENERGY_CONSUMED_TOTAL, Units.WATT, "winvconsq_3p")); // unit multiplyer
+        list.add(cc(CHANNEL_LOAD_ENERGY_PRODUCED_TOTAL, Units.WATT, "wloadprodq_3p")); // unit multiplyer
+        list.add(cc(CHANNEL_LOAD_ENERGY_CONSUMED_TOTAL, Units.WATT, "wloadprodq_3p")); // unit multiplyer
+        list.add(cc(CHANNEL_TOTAL_SOLAR_ENERGY, Units.WATT, "wpv"));
+        list.add(cc(CHANNEL_STATE, Units.ONE, "state"));
+        list.add(cc(CHANNEL_TIMESTAMP, Units.ONE, "ts"));
+        list.add(cc(CHANNEL_BATTERY_ENERGY_PRODUCED, Units.WATT, "wbatprod"));
+        list.add(cc(CHANNEL_BATTERY_ENERGY_CONSUMED, Units.WATT, "wpbatcons"));
+        list.add(cc(CHANNEL_SOC, Units.PERCENT, "soc"));
+        list.add(cc(CHANNEL_SOH, Units.PERCENT, "soh"));
+        list.add(cc(CHANNEL_POWER_BATTERY, Units.WATT, "pbat"));
+        list.add(cc(CHANNEL_TOTAL_CAPACITY_BATTERIES, Units.WATT_HOUR, "ratedcap"));
         return list;
     }
 
@@ -177,21 +172,10 @@ public class ChannelMapping {
         list.add(cc(CHANNEL_ESM_ID, Units.ONE, "id"));
         list.add(cc(CHANNEL_ESM_SOH, Units.PERCENT, "soh"));
         list.add(cc(CHANNEL_ESM_SOC, Units.PERCENT, "soc"));
-
-        // TODO adapt CHANNEL_ESM_TOTAL_CAPACITY unit from joule to kwh
-        list.add(cc(CHANNEL_ESM_TOTAL_CAPACITY, Units.WATT_HOUR, "ratedcapacity"));
-        // TODO adapt CHANNEL_ESM_POWER_BATTERY unit to kw
-        list.add(cc(CHANNEL_ESM_POWER_BATTERY, Units.WATT, "ratedpower"));
+        list.add(cc(CHANNEL_ESM_TOTAL_CAPACITY, Units.WATT_HOUR, "ratedcapacity")); // unit multiplyer
+        list.add(cc(CHANNEL_ESM_POWER_BATTERY, Units.WATT, "ratedpower")); // unit multiplyer
         list.add(cc(CHANNEL_ESM_STATUS, Units.ONE, "status"));
         list.add(cc(CHANNEL_ESM_TIMESTAMP, Units.ONE, "ts"));
-        return list;
-    }
-
-    public static List<ChannelMapping> getChannelConfigurationRequest() {
-        final List<ChannelMapping> list = new ArrayList<>();
-        list.add(cc(CHANNEL_REQUEST_CHARGE, Units.ONE));
-        list.add(cc(CHANNEL_REQUEST_DISCHARGE, Units.ONE));
-        list.add(cc(CHANNEL_REQUEST_AUTO, Units.ONE));
         return list;
     }
 }
