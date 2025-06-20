@@ -279,6 +279,10 @@
 			<channel-group id="sso-4" typeId="sso">
 				<label>SSO 4</label>
 			</channel-group>
+			<channel-group id="esm" typeId="esm">
+				<label>ESM</label>
+			</channel-group>
+
 			<channel id="eso-id" typeId="string">
 				<label>Eso Identifier</label>
 			</channel>
@@ -312,27 +316,7 @@
 			<channel id="eso-timestamp" typeId="date-time">
 				<label>Eso Published Time</label>
 			</channel>
-			<channel id="esm-id" typeId="string">
-				<label>Esm Identifier</label>
-			</channel>
-			<channel id="esm-soh" typeId="percentage">
-				<label>Esm SoH</label>
-			</channel>
-			<channel id="esm-soc" typeId="percentage">
-				<label>Esm SoC</label>
-			</channel>
-			<channel id="esm-total-capacity" typeId="energy">
-				<label>Esm Rated Capacity</label>
-			</channel>
-			<channel id="esm-power-battery" typeId="power">
-				<label>Esm Rated Power, Batt.</label>
-			</channel>
-			<channel id="esm-status" typeId="string">
-				<label>Esm Status</label>
-			</channel>
-			<channel id="esm-timestamp" typeId="date-time">
-				<label>Esm Published Time</label>
-			</channel>
+
 			<channel id="request-charge" typeId="request">
 				<label>RequestCharge</label>
 			</channel>
@@ -378,7 +362,7 @@
 		<description>This is a group of SSO channels</description>
 		<channels>
 			<channel id="id" typeId="string">
-				<label>ID</label>
+				<label>Identifier</label>
 			</channel>
 			<channel id="pv-voltage" typeId="electric-potential">
 				<label>Voltage, PV String</label>
@@ -407,7 +391,33 @@
 		</channels>
 	</channel-group-type>
 
-
+	<channel-group-type id="esm">
+		<label>ESM</label>
+		<description>This is a group of ESM channels</description>
+		<channels>
+			<channel id="id" typeId="string">
+				<label>Identifier</label>
+			</channel>
+			<channel id="soh" typeId="percentage">
+				<label>SoH</label>
+			</channel>
+			<channel id="soc" typeId="percentage">
+				<label>SoC</label>
+			</channel>
+			<channel id="total-capacity" typeId="energy">
+				<label>Rated Capacity</label>
+			</channel>
+			<channel id="power-battery" typeId="power">
+				<label>Rated Power, Batt.</label>
+			</channel>
+			<channel id="status" typeId="string">
+				<label>Status</label>
+			</channel>
+			<channel id="timestamp" typeId="date-time">
+				<label>Published Time</label>
+			</channel>
+		</channels>
+	</channel-group-type>
 
 	<channel-type id="energy">
 		<item-type>Number:Energy</item-type>

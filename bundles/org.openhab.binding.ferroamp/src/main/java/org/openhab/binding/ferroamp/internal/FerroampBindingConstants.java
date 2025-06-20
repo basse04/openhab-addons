@@ -163,13 +163,13 @@ public class FerroampBindingConstants {
     public static final String CHANNEL_ESOTIMESTAMP = "eso-timestamp";
 
     // List of ESM Channel ids
-    public static final String CHANNEL_ESMID = "esm-id";
-    public static final String CHANNEL_ESMSOH = "esm-soh";
-    public static final String CHANNEL_ESMSOC = "esm-soc";
-    public static final String CHANNEL_ESMTOTALCAPACITY = "esm-total-capacity";
-    public static final String CHANNEL_ESMPOWERBATTERY = "esm-power-battery";
-    public static final String CHANNEL_ESMSTATUS = "esm-status";
-    public static final String CHANNEL_ESMTIMESTAMP = "esm-timestamp";
+    public static final String CHANNEL_ESM_ID = "id";
+    public static final String CHANNEL_ESM_SOH = "soh";
+    public static final String CHANNEL_ESM_SOC = "soc";
+    public static final String CHANNEL_ESM_TOTAL_CAPACITY = "total-capacity";
+    public static final String CHANNEL_ESM_POWER_BATTERY = "power-battery";
+    public static final String CHANNEL_ESM_STATUS = "status";
+    public static final String CHANNEL_ESM_TIMESTAMP = "timestamp";
 
     // List of all Channel ids for configuration
     public static final String CHANNEL_REQUESTCHARGE = "request-charge";

@@ -193,18 +193,10 @@ public class FerroampHandler extends BaseThingHandler implements MqttMessageSubs
             }
         }
 
-        String[] esmUpdateChannels = new String[7];
-        esmUpdateChannels = FerroampMqttCommunication.getEsmChannelUpdateValues();
-        if (esmUpdateChannels.length > 0) {
-            int channelValuesCounterEsm = 0;
-            if (esmUpdateChannels.length <= 9) {
-                for (ChannelMapping cConfig : channelConfigEsm) {
-                    String esmChannel = cConfig.id;
-                    State esmState = StringType.valueOf(esmUpdateChannels[channelValuesCounterEsm]);
-                    updateState(esmChannel, esmState);
-                    channelValuesCounterEsm++;
-                }
-            }
+        Map<String, @Nullable String> keyValueMap = ferroampMqttCommunication.getEsmChannelUpdateValues();
+        for (ChannelMapping mapping : ChannelMapping.getEsmMapping()) {
+            State newState = StringType.valueOf(keyValueMap.get(mapping.jsonKey));
+            updateState("esm#" + mapping.id, newState);
         }
     }
 

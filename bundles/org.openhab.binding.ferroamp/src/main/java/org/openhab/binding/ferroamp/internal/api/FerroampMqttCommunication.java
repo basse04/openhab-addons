@@ -48,9 +48,9 @@ public class FerroampMqttCommunication implements MqttMessageSubscriber {
     public static String[] ehubChannelsUpdateValues = new String[0];
 
     public Map<String, @Nullable String>[] ssoChannelsUpdateValues = new HashMap[9];
+    public Map<String, @Nullable String> esmChannelsUpdateValues = new HashMap<>();
 
     public static String[] esoChannelsUpdateValues = new String[0];
-    public static String[] esmChannelsUpdateValues = new String[0];
 
     public static boolean isSsoChecked = false;
 
@@ -102,7 +102,7 @@ public class FerroampMqttCommunication implements MqttMessageSubscriber {
             processIncomingJsonMessageEso(topic, new String(payload, StandardCharsets.UTF_8));
         }
         if (FerroampBindingConstants.ESM_TOPIC.equals(topic)) {
-            processIncomingJsonMessageEsm(topic, new String(payload, StandardCharsets.UTF_8));
+            processIncomingJsonMessageEsm(new String(payload, StandardCharsets.UTF_8));
         }
     }
 
@@ -347,10 +347,10 @@ public class FerroampMqttCommunication implements MqttMessageSubscriber {
         ehubChannelsUpdateValues = ehubChannelPostsValue;
     }
 
-    public static Map<String, @Nullable String> extractKeyValuePairs(String json, int ssoIndex) {
+    public static Map<String, @Nullable String> extractKeyValuePairs(String json, int deviceIndex) {
         Map<String, @Nullable String> result = new HashMap<>();
         JsonArray arr = JsonParser.parseString(json).getAsJsonArray();
-        JsonObject obj = arr.get(ssoIndex).getAsJsonObject();
+        JsonObject obj = arr.get(deviceIndex).getAsJsonObject();
         for (Map.Entry<String, JsonElement> entry : obj.entrySet()) {
             JsonObject valueObj = entry.getValue().getAsJsonObject();
             String value = valueObj.has("val") ? valueObj.get("val").getAsString() : null;
@@ -391,24 +391,8 @@ public class FerroampMqttCommunication implements MqttMessageSubscriber {
     }
 
     // Prepare actual Json-topic Esm-message and update values for channels
-    void processIncomingJsonMessageEsm(String topic, String messageJsonEsm) {
-        String[] esmChannelPostsValue = new String[7]; // Array for ESM, Energy Storage Module ) Posts
-        JsonObject jsonElementsObjectEsm = new Gson().fromJson(messageJsonEsm, JsonObject.class);
-        Objects.requireNonNull(jsonElementsObjectEsm, "JsonObject jsonElementsObjectEsm cannot be null");
-        String jsonElementsStringTempEsm = "";
-
-        if (!jsonElementsObjectEsm.isEmpty()) {
-            int esmCounter = 0;
-            while (esmCounter <= 6) {
-                jsonElementsStringTempEsm = jsonElementsObjectEsm
-                        .get(EsmJsonElements.getJsonElementsEsm().get(esmCounter)).toString();
-                esmChannelPostsValue[esmCounter] = GetGeneralValueHelperEsm(jsonElementsStringTempEsm);
-                esmCounter++;
-            }
-            esmChannelsUpdateValues = esmChannelPostsValue;
-        } else {
-            return;
-        }
+    void processIncomingJsonMessageEsm(String messageJsonEsm) {
+        esmChannelsUpdateValues = extractKeyValuePairs(messageJsonEsm, 0);
     }
 
     public String GetGeneralValueHelperEhub(String jsonElementsStringEhub) {
@@ -451,15 +435,6 @@ public class FerroampMqttCommunication implements MqttMessageSubscriber {
         return returnValueEso;
     }
 
-    public String GetGeneralValueHelperEsm(String jsonElementsStringEsm) {
-        String returnValueEsm = "";
-        GetGeneralValues objectEsm = new Gson().fromJson(jsonElementsStringEsm, GetGeneralValues.class);
-        if (objectEsm != null) {
-            returnValueEsm = objectEsm.getVal().toString();
-        }
-        return returnValueEsm;
-    }
-
     public @Nullable static String[] getEhubChannelUpdateValues() {
         try {
             return ehubChannelsUpdateValues;
@@ -487,13 +462,13 @@ public class FerroampMqttCommunication implements MqttMessageSubscriber {
         return esoChannelsUpdateValues;
     }
 
-    public @Nullable static String[] getEsmChannelUpdateValues() {
+    public Map<String, @Nullable String> getEsmChannelUpdateValues() {
         try {
             return esmChannelsUpdateValues;
         } catch (Exception e) {
             logger.debug("Failed at update of Esm channel values");
         }
-        return esmChannelsUpdateValues;
+        return new HashMap<>();
     }
 
     public String jsonStripEhub(String jsonStringEhub) {
