@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.io.IOException;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openhab.binding.ferroamp.internal.DataUtil;
 import org.openhab.binding.ferroamp.internal.FerroampMqttCommunication;
