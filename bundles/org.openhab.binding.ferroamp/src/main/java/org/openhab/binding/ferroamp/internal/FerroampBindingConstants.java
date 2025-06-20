@@ -139,15 +139,16 @@ public class FerroampBindingConstants {
     public static final String CHANNEL_TOTALCAPACITYBATTERIES = "total-capacity-batteries";
 
     // List of SSO Channel ids
-    public static final String CHANNEL_S1ID = "s1-id";
-    public static final String CHANNEL_S1PVVOLTAGE = "s1-pv-voltage";
-    public static final String CHANNEL_S1PVCURRENT = "s1-pv-current";
-    public static final String CHANNEL_S1TOTALSOLARENERGY = "s1-total-solar-energy";
-    public static final String CHANNEL_S1RELAYSTATUS = "s1-relay-status";
-    public static final String CHANNEL_S1TEMPERATURE = "s1-temperature";
-    public static final String CHANNEL_S1FAULTCODE = "s1-fault-code";
-    public static final String CHANNEL_S1DCLINKVOLTAGE = "s1-dc-link-voltage";
-    public static final String CHANNEL_S1TIMESTAMP = "s1-timestamp";
+    public static final String CHANNEL_SSO_ID = "id";
+    public static final String CHANNEL_SSO_PV_VOLTAGE = "pv-voltage";
+    public static final String CHANNEL_SSO_PV_CURRENT = "pv-current";
+    public static final String CHANNEL_SSO_TOTAL_SOLAR_ENERGY = "total-solar-energy";
+    public static final String CHANNEL_SSO_RELAY_STATUS = "relay-status";
+    public static final String CHANNEL_SSO_TEMPERATURE = "temperature";
+    public static final String CHANNEL_SSO_FAULT_CODE = "fault-code";
+    public static final String CHANNEL_SSO_DC_LINK_VOLTAGE = "dc-link-voltage";
+    public static final String CHANNEL_SSO_TIMESTAMP = "timestamp";
+
     public static final String CHANNEL_S2ID = "s2-id";
     public static final String CHANNEL_S2PVVOLTAGE = "s2-pv-voltage";
     public static final String CHANNEL_S2PVCURRENT = "s2-pv-current";

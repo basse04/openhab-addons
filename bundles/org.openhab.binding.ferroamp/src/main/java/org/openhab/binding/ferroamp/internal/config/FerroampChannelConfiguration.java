@@ -134,15 +134,15 @@ public class FerroampChannelConfiguration {
 
     public static List<FerroampChannelConfiguration> getChannelConfigurationSsoS1() {
         final List<FerroampChannelConfiguration> list = new ArrayList<>();
-        list.add(cc(FerroampBindingConstants.CHANNEL_S1ID, Units.ONE));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S1PVVOLTAGE, Units.VOLT));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S1PVCURRENT, Units.AMPERE));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S1TOTALSOLARENERGY, Units.WATT));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S1RELAYSTATUS, Units.ONE));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S1TEMPERATURE, Units.ONE));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S1FAULTCODE, Units.ONE));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S1DCLINKVOLTAGE, Units.VOLT));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S1TIMESTAMP, Units.ONE));
+        list.add(cc(FerroampBindingConstants.CHANNEL_SSO_ID, Units.ONE));
+        list.add(cc(FerroampBindingConstants.CHANNEL_SSO_PV_VOLTAGE, Units.VOLT));
+        list.add(cc(FerroampBindingConstants.CHANNEL_SSO_PV_CURRENT, Units.AMPERE));
+        list.add(cc(FerroampBindingConstants.CHANNEL_SSO_TOTAL_SOLAR_ENERGY, Units.WATT));
+        list.add(cc(FerroampBindingConstants.CHANNEL_SSO_RELAY_STATUS, Units.ONE));
+        list.add(cc(FerroampBindingConstants.CHANNEL_SSO_TEMPERATURE, Units.ONE));
+        list.add(cc(FerroampBindingConstants.CHANNEL_SSO_FAULT_CODE, Units.ONE));
+        list.add(cc(FerroampBindingConstants.CHANNEL_SSO_DC_LINK_VOLTAGE, Units.VOLT));
+        list.add(cc(FerroampBindingConstants.CHANNEL_SSO_TIMESTAMP, Units.ONE));
         return list;
     }
 
