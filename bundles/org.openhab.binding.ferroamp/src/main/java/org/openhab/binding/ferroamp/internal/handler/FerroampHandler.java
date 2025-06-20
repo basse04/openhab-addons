@@ -54,8 +54,6 @@ public class FerroampHandler extends BaseThingHandler implements MqttMessageSubs
     FerroampConfiguration ferroampConfig = new FerroampConfiguration();
 
     private static List<ChannelMapping> channelConfigEhub = new ArrayList<>();
-    private static List<ChannelMapping> channelConfigEso = new ArrayList<>();
-    private static List<ChannelMapping> channelConfigEsm = new ArrayList<>();
 
     private @Nullable ScheduledFuture<?> ferroampPoller;
 
@@ -67,17 +65,17 @@ public class FerroampHandler extends BaseThingHandler implements MqttMessageSubs
     public void handleCommand(ChannelUID channelUID, Command command) {
         String transId = UUID.randomUUID().toString();
         String valueConfiguration = command.toString();
-        if (FerroampBindingConstants.CHANNEL_REQUESTCHARGE.equals(channelUID.getId())) {
+        if (FerroampBindingConstants.CHANNEL_REQUEST_CHARGE.equals(channelUID.getId())) {
             String requestCmdJsonCharge = "{\"" + "transId" + "\":\"" + transId
                     + "\",\"cmd\":{\"name\":\"charge\",\"arg\":\"" + valueConfiguration + "\"}}";
             FerroampMqttCommunication.sendPublishedTopic(requestCmdJsonCharge, ferroampConfig);
         }
-        if (FerroampBindingConstants.CHANNEL_REQUESTDISCHARGE.equals(channelUID.getId())) {
+        if (FerroampBindingConstants.CHANNEL_REQUEST_DISCHARGE.equals(channelUID.getId())) {
             String requestCmdJsonDisCharge = "{\"" + "transId" + "\":\"" + transId
                     + "\",\"cmd\":{\"name\":\"discharge\",\"arg\":\"" + valueConfiguration + "\"}}";
             FerroampMqttCommunication.sendPublishedTopic(requestCmdJsonDisCharge, ferroampConfig);
         }
-        if (FerroampBindingConstants.CHANNEL_AUTO.equals(channelUID.getId())) {
+        if (FerroampBindingConstants.CHANNEL_REQUEST_AUTO.equals(channelUID.getId())) {
             String requestCmdJsonAuto = "{\"" + "transId" + "\":\"" + transId + "\",\"cmd\":{\"name\":\"auto\"}}";
             FerroampMqttCommunication.sendPublishedTopic(requestCmdJsonAuto, ferroampConfig);
         }
@@ -90,8 +88,6 @@ public class FerroampHandler extends BaseThingHandler implements MqttMessageSubs
 
         // Set channel configuration parameters
         channelConfigEhub = ChannelMapping.getChannelConfigurationEhub();
-        channelConfigEso = ChannelMapping.getChannelConfigurationEso();
-        channelConfigEsm = ChannelMapping.getChannelConfigurationEsm();
 
         if (!ferroampConfig.hostName.isBlank() || !ferroampConfig.password.isBlank()
                 || !ferroampConfig.userName.isBlank()) {
@@ -173,29 +169,21 @@ public class FerroampHandler extends BaseThingHandler implements MqttMessageSubs
         int ssoNumber = 4; // Number of SSO's
         for (int ssoIndex = 0; ssoIndex < ssoNumber; ssoNumber++) {
             Map<String, @Nullable String> keyValueMap = ferroampMqttCommunication.getSsoChannelUpdateValues(ssoIndex);
-            for (ChannelMapping mapping : ChannelMapping.getSSOChannelMapping()) {
+            for (ChannelMapping mapping : ChannelMapping.getSSOMapping()) {
                 State newState = StringType.valueOf(keyValueMap.get(mapping.jsonKey));
                 updateState("sso-" + ssoIndex + 1 + "#" + mapping.id, newState);
             }
         }
 
-        String[] esoUpdateChannels = new String[11];
-        esoUpdateChannels = FerroampMqttCommunication.getEsoChannelUpdateValues();
-        if (esoUpdateChannels.length > 0) {
-            int channelValuesCounterEso = 0;
-            if (esoUpdateChannels.length <= 9) {
-                for (ChannelMapping cConfig : channelConfigEso) {
-                    String esoChannel = cConfig.id;
-                    State esoState = StringType.valueOf(esoUpdateChannels[channelValuesCounterEso]);
-                    updateState(esoChannel, esoState);
-                    channelValuesCounterEso++;
-                }
-            }
+        Map<String, @Nullable String> esoKeyValueMap = ferroampMqttCommunication.getEsoChannelUpdateValues();
+        for (ChannelMapping mapping : ChannelMapping.getESOMapping()) {
+            State newState = StringType.valueOf(esoKeyValueMap.get(mapping.jsonKey));
+            updateState("eso#" + mapping.id, newState);
         }
 
-        Map<String, @Nullable String> keyValueMap = ferroampMqttCommunication.getEsmChannelUpdateValues();
-        for (ChannelMapping mapping : ChannelMapping.getEsmMapping()) {
-            State newState = StringType.valueOf(keyValueMap.get(mapping.jsonKey));
+        Map<String, @Nullable String> esmKeyValueMap = ferroampMqttCommunication.getEsmChannelUpdateValues();
+        for (ChannelMapping mapping : ChannelMapping.getESMMapping()) {
+            State newState = StringType.valueOf(esmKeyValueMap.get(mapping.jsonKey));
             updateState("esm#" + mapping.id, newState);
         }
     }
