@@ -171,15 +171,15 @@ public class ChannelMapping {
         return list;
     }
 
-    public static List<ChannelMapping> getChannelConfigurationEsm() {
+    public static List<ChannelMapping> getEsmMapping() {
         final List<ChannelMapping> list = new ArrayList<>();
-        list.add(cc(FerroampBindingConstants.CHANNEL_ESMID, Units.ONE));
-        list.add(cc(FerroampBindingConstants.CHANNEL_ESMSOH, Units.PERCENT));
-        list.add(cc(FerroampBindingConstants.CHANNEL_ESMSOC, Units.PERCENT));
-        list.add(cc(FerroampBindingConstants.CHANNEL_ESMTOTALCAPACITY, Units.WATT_HOUR));
-        list.add(cc(FerroampBindingConstants.CHANNEL_ESMPOWERBATTERY, Units.WATT));
-        list.add(cc(FerroampBindingConstants.CHANNEL_ESMSTATUS, Units.ONE));
-        list.add(cc(FerroampBindingConstants.CHANNEL_ESMTIMESTAMP, Units.ONE));
+        list.add(cc(FerroampBindingConstants.CHANNEL_ESM_ID, Units.ONE, "id"));
+        list.add(cc(FerroampBindingConstants.CHANNEL_ESM_SOH, Units.PERCENT, "soh"));
+        list.add(cc(FerroampBindingConstants.CHANNEL_ESM_SOC, Units.PERCENT, "soc"));
+        list.add(cc(FerroampBindingConstants.CHANNEL_ESM_TOTAL_CAPACITY, Units.WATT_HOUR, "ratedcapacity"));
+        list.add(cc(FerroampBindingConstants.CHANNEL_ESM_POWER_BATTERY, Units.WATT, "ratedpower"));
+        list.add(cc(FerroampBindingConstants.CHANNEL_ESM_STATUS, Units.ONE, "status"));
+        list.add(cc(FerroampBindingConstants.CHANNEL_ESM_TIMESTAMP, Units.ONE, "ts"));
         return list;
     }
 
