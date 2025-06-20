@@ -24,7 +24,6 @@ import org.openhab.binding.ferroamp.dto.GetGeneralValues;
 import org.openhab.binding.ferroamp.dto.GetUdc;
 import org.openhab.binding.ferroamp.internal.FerroampBindingConstants;
 import org.openhab.binding.ferroamp.internal.config.FerroampConfiguration;
-import org.openhab.binding.ferroamp.internal.handler.FerroampHandler;
 import org.openhab.core.io.transport.mqtt.MqttBrokerConnection;
 import org.openhab.core.io.transport.mqtt.MqttMessageSubscriber;
 import org.slf4j.Logger;
@@ -52,38 +51,36 @@ public class FerroampMqttCommunication implements MqttMessageSubscriber {
     public Map<String, @Nullable String> esoChannelsUpdateValues = new HashMap<>();
 
     private final static Logger logger = LoggerFactory.getLogger(FerroampMqttCommunication.class);
+    private @Nullable MqttBrokerConnection ferroampConnection;
 
-    public FerroampMqttCommunication() {
+    public FerroampMqttCommunication(String username, String password, String host, int port) {
         super();
+        ferroampConnection = new MqttBrokerConnection(host, port, false, false, username);
+        ferroampConnection.setCredentials(username, password);
+    }
+
+    public void start() {
+        MqttBrokerConnection ferroampConnection = this.ferroampConnection;
+        if (ferroampConnection == null) {
+            logger.error("FerroampMqttCommunication: MqttBrokerConnection is null, cannot start connection");
+            return;
+        }
+
+        ferroampConnection.start();
+        ferroampConnection.subscribe(FerroampBindingConstants.EHUB_TOPIC, this);
+        ferroampConnection.subscribe(FerroampBindingConstants.SSO_TOPIC, this);
+        ferroampConnection.subscribe(FerroampBindingConstants.ESO_TOPIC, this);
+        ferroampConnection.subscribe(FerroampBindingConstants.ESM_TOPIC, this);
     }
 
     // Handles request topic
-    public static void sendPublishedTopic(String payload, FerroampConfiguration ferroampConfig) {
-        MqttBrokerConnection localConfigurationConnection = FerroampHandler.getFerroampConnection();
+    public void sendPublishedTopic(String payload, FerroampConfiguration ferroampConfig) {
+        MqttBrokerConnection localConfigurationConnection = ferroampConnection;
         Objects.requireNonNull(localConfigurationConnection,
                 "MqttBrokerConnection localConfigurationConnection cannot be null");
         localConfigurationConnection.start();
         localConfigurationConnection.setCredentials(ferroampConfig.userName, ferroampConfig.password);
         localConfigurationConnection.publish(FerroampBindingConstants.REQUEST_TOPIC, payload.getBytes(), 1, false);
-    }
-
-    // Handles respective topic type
-    public void getSubscribedTopic(String topic, FerroampConfiguration ferroampConfig) {
-        MqttBrokerConnection localSubscribeConnection = FerroampHandler.getFerroampConnection();
-        Objects.requireNonNull(localSubscribeConnection,
-                "MqttBrokerConnection localSubscribeConnection cannot be null");
-        if (FerroampBindingConstants.EHUB_TOPIC.equals(topic)) {
-            localSubscribeConnection.subscribe(FerroampBindingConstants.EHUB_TOPIC, this);
-        }
-        if (FerroampBindingConstants.SSO_TOPIC.equals(topic)) {
-            localSubscribeConnection.subscribe(FerroampBindingConstants.SSO_TOPIC, this);
-        }
-        if (FerroampBindingConstants.ESO_TOPIC.equals(topic)) {
-            localSubscribeConnection.subscribe(FerroampBindingConstants.ESO_TOPIC, this);
-        }
-        if (FerroampBindingConstants.ESM_TOPIC.equals(topic)) {
-            localSubscribeConnection.subscribe(FerroampBindingConstants.ESM_TOPIC, this);
-        }
     }
 
     // Capture actual Json-topic message
@@ -448,5 +445,22 @@ public class FerroampMqttCommunication implements MqttMessageSubscriber {
     public String mJTokWh(String actualmJ) {
         Double actualkWhD = (Double.parseDouble(actualmJ) / 3600000000.0);
         return actualkWhD.toString();
+    }
+
+    public void dispose() {
+        MqttBrokerConnection localSubscribeConnection = ferroampConnection;
+        if (localSubscribeConnection != null) {
+            localSubscribeConnection.unsubscribe(FerroampBindingConstants.EHUB_TOPIC, this);
+            localSubscribeConnection.unsubscribe(FerroampBindingConstants.SSO_TOPIC, this);
+            localSubscribeConnection.unsubscribe(FerroampBindingConstants.ESO_TOPIC, this);
+            localSubscribeConnection.unsubscribe(FerroampBindingConstants.ESM_TOPIC, this);
+            localSubscribeConnection.stop();
+        }
+        this.ferroampConnection = null;
+    }
+
+    public boolean isConnected() {
+        MqttBrokerConnection ferroampConnection = this.ferroampConnection;
+        return !(ferroampConnection == null || "DISCONNECTED".equals(ferroampConnection.connectionState().toString()));
     }
 }
