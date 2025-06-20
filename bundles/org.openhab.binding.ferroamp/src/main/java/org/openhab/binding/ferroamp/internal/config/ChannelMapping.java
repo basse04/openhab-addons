@@ -22,26 +22,35 @@ import org.openhab.binding.ferroamp.internal.FerroampBindingConstants;
 import org.openhab.core.library.unit.Units;
 
 /**
- * The {@link FerroampChannelConfiguration} class defines methods, that set the channel configuration for the binding.
+ * The {@link ChannelMapping} class defines methods, that set the channel configuration for the binding.
  *
  * @author Örjan Backsell - Initial contribution
  *
  */
 
 @NonNullByDefault
-public class FerroampChannelConfiguration {
+public class ChannelMapping {
 
-    public static final String id = "";
+    public String id = "";
+    public Unit<?> unit = Units.ONE;
+    public String jsonKey = "";
 
-    public FerroampChannelConfiguration(String id, Unit<?> unit) {
+    public ChannelMapping(String id, Unit<?> unit, String jsonKey) {
+        this.id = id;
+        this.unit = unit;
+        this.jsonKey = jsonKey;
     }
 
-    private static FerroampChannelConfiguration cc(String id, Unit<?> unit) {
-        return new FerroampChannelConfiguration(id, unit);
+    private static ChannelMapping cc(String id, Unit<?> unit) {
+        return new ChannelMapping(id, unit, "");
     }
 
-    public static List<FerroampChannelConfiguration> getChannelConfigurationEhub() {
-        final List<FerroampChannelConfiguration> list = new ArrayList<>();
+    private static ChannelMapping cc(String id, Unit<?> unit, String jsonKey) {
+        return new ChannelMapping(id, unit, jsonKey);
+    }
+
+    public static List<ChannelMapping> getChannelConfigurationEhub() {
+        final List<ChannelMapping> list = new ArrayList<>();
 
         list.add(cc(FerroampBindingConstants.CHANNEL_GRIDFREQUENCY, Units.HERTZ));
         list.add(cc(FerroampBindingConstants.CHANNEL_ACECURRENTL1, Units.AMPERE));
@@ -132,64 +141,22 @@ public class FerroampChannelConfiguration {
         return list;
     }
 
-    public static List<FerroampChannelConfiguration> getChannelConfigurationSsoS1() {
-        final List<FerroampChannelConfiguration> list = new ArrayList<>();
-        list.add(cc(FerroampBindingConstants.CHANNEL_SSO_ID, Units.ONE));
-        list.add(cc(FerroampBindingConstants.CHANNEL_SSO_PV_VOLTAGE, Units.VOLT));
-        list.add(cc(FerroampBindingConstants.CHANNEL_SSO_PV_CURRENT, Units.AMPERE));
-        list.add(cc(FerroampBindingConstants.CHANNEL_SSO_TOTAL_SOLAR_ENERGY, Units.WATT));
-        list.add(cc(FerroampBindingConstants.CHANNEL_SSO_RELAY_STATUS, Units.ONE));
-        list.add(cc(FerroampBindingConstants.CHANNEL_SSO_TEMPERATURE, Units.ONE));
-        list.add(cc(FerroampBindingConstants.CHANNEL_SSO_FAULT_CODE, Units.ONE));
-        list.add(cc(FerroampBindingConstants.CHANNEL_SSO_DC_LINK_VOLTAGE, Units.VOLT));
-        list.add(cc(FerroampBindingConstants.CHANNEL_SSO_TIMESTAMP, Units.ONE));
+    public static List<ChannelMapping> getSSOChannelMapping() {
+        final List<ChannelMapping> list = new ArrayList<>();
+        list.add(cc(FerroampBindingConstants.CHANNEL_SSO_ID, Units.ONE, "id"));
+        list.add(cc(FerroampBindingConstants.CHANNEL_SSO_PV_VOLTAGE, Units.VOLT, "upv"));
+        list.add(cc(FerroampBindingConstants.CHANNEL_SSO_PV_CURRENT, Units.AMPERE, "ipv"));
+        list.add(cc(FerroampBindingConstants.CHANNEL_SSO_TOTAL_SOLAR_ENERGY, Units.WATT, "wpv"));
+        list.add(cc(FerroampBindingConstants.CHANNEL_SSO_RELAY_STATUS, Units.ONE, "relaystatus"));
+        list.add(cc(FerroampBindingConstants.CHANNEL_SSO_TEMPERATURE, Units.ONE, "temp"));
+        list.add(cc(FerroampBindingConstants.CHANNEL_SSO_FAULT_CODE, Units.ONE, "faultcode"));
+        list.add(cc(FerroampBindingConstants.CHANNEL_SSO_DC_LINK_VOLTAGE, Units.VOLT, "udc"));
+        list.add(cc(FerroampBindingConstants.CHANNEL_SSO_TIMESTAMP, Units.ONE, "ts"));
         return list;
     }
 
-    public static List<FerroampChannelConfiguration> getChannelConfigurationSsoS2() {
-        final List<FerroampChannelConfiguration> list = new ArrayList<>();
-        list.add(cc(FerroampBindingConstants.CHANNEL_S2ID, Units.ONE));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S2PVVOLTAGE, Units.VOLT));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S2PVCURRENT, Units.AMPERE));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S2TOTALSOLARENERGY, Units.WATT));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S2RELAYSTATUS, Units.ONE));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S2TEMPERATURE, Units.ONE));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S2FAULTCODE, Units.ONE));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S2DCLINKVOLTAGE, Units.VOLT));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S2TIMESTAMP, Units.ONE));
-        return list;
-    }
-
-    public static List<FerroampChannelConfiguration> getChannelConfigurationSsoS3() {
-        final List<FerroampChannelConfiguration> list = new ArrayList<>();
-        list.add(cc(FerroampBindingConstants.CHANNEL_S3ID, Units.ONE));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S3PVVOLTAGE, Units.VOLT));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S3PVCURRENT, Units.AMPERE));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S3TOTALSOLARENERGY, Units.WATT));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S3RELAYSTATUS, Units.ONE));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S3TEMPERATURE, Units.ONE));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S3FAULTCODE, Units.ONE));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S3DCLINKVOLTAGE, Units.VOLT));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S3TIMESTAMP, Units.ONE));
-        return list;
-    }
-
-    public static List<FerroampChannelConfiguration> getChannelConfigurationSsoS4() {
-        final List<FerroampChannelConfiguration> list = new ArrayList<>();
-        list.add(cc(FerroampBindingConstants.CHANNEL_S4ID, Units.ONE));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S4PVVOLTAGE, Units.VOLT));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S4PVCURRENT, Units.AMPERE));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S4TOTALSOLARENERGY, Units.WATT));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S4RELAYSTATUS, Units.ONE));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S4TEMPERATURE, Units.ONE));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S4FAULTCODE, Units.ONE));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S4DCLINKVOLTAGE, Units.VOLT));
-        list.add(cc(FerroampBindingConstants.CHANNEL_S4TIMESTAMP, Units.ONE));
-        return list;
-    }
-
-    public static List<FerroampChannelConfiguration> getChannelConfigurationEso() {
-        final List<FerroampChannelConfiguration> list = new ArrayList<>();
+    public static List<ChannelMapping> getChannelConfigurationEso() {
+        final List<ChannelMapping> list = new ArrayList<>();
         list.add(cc(FerroampBindingConstants.CHANNEL_ESOID, Units.ONE));
         list.add(cc(FerroampBindingConstants.CHANNEL_ESOVOLTAGEBATTERY, Units.VOLT));
         list.add(cc(FerroampBindingConstants.CHANNEL_ESOCURRENTBATTERY, Units.AMPERE));
@@ -204,8 +171,8 @@ public class FerroampChannelConfiguration {
         return list;
     }
 
-    public static List<FerroampChannelConfiguration> getChannelConfigurationEsm() {
-        final List<FerroampChannelConfiguration> list = new ArrayList<>();
+    public static List<ChannelMapping> getChannelConfigurationEsm() {
+        final List<ChannelMapping> list = new ArrayList<>();
         list.add(cc(FerroampBindingConstants.CHANNEL_ESMID, Units.ONE));
         list.add(cc(FerroampBindingConstants.CHANNEL_ESMSOH, Units.PERCENT));
         list.add(cc(FerroampBindingConstants.CHANNEL_ESMSOC, Units.PERCENT));
@@ -216,8 +183,8 @@ public class FerroampChannelConfiguration {
         return list;
     }
 
-    public static List<FerroampChannelConfiguration> getChannelConfigurationRequest() {
-        final List<FerroampChannelConfiguration> list = new ArrayList<>();
+    public static List<ChannelMapping> getChannelConfigurationRequest() {
+        final List<ChannelMapping> list = new ArrayList<>();
         list.add(cc(FerroampBindingConstants.CHANNEL_REQUESTCHARGE, Units.ONE));
         list.add(cc(FerroampBindingConstants.CHANNEL_REQUESTDISCHARGE, Units.ONE));
         list.add(cc(FerroampBindingConstants.CHANNEL_AUTO, Units.ONE));

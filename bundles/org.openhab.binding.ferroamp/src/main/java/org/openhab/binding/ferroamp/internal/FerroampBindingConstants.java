@@ -149,34 +149,6 @@ public class FerroampBindingConstants {
     public static final String CHANNEL_SSO_DC_LINK_VOLTAGE = "dc-link-voltage";
     public static final String CHANNEL_SSO_TIMESTAMP = "timestamp";
 
-    public static final String CHANNEL_S2ID = "s2-id";
-    public static final String CHANNEL_S2PVVOLTAGE = "s2-pv-voltage";
-    public static final String CHANNEL_S2PVCURRENT = "s2-pv-current";
-    public static final String CHANNEL_S2TOTALSOLARENERGY = "s2-total-solar-energy";
-    public static final String CHANNEL_S2RELAYSTATUS = "s2-relay-status";
-    public static final String CHANNEL_S2TEMPERATURE = "s2-temperature";
-    public static final String CHANNEL_S2FAULTCODE = "s2-fault-code";
-    public static final String CHANNEL_S2DCLINKVOLTAGE = "s2-dc-link-voltage";
-    public static final String CHANNEL_S2TIMESTAMP = "s2-timestamp";
-    public static final String CHANNEL_S3ID = "s3-id";
-    public static final String CHANNEL_S3PVVOLTAGE = "s3-pv-voltage";
-    public static final String CHANNEL_S3PVCURRENT = "s3-pv-current";
-    public static final String CHANNEL_S3TOTALSOLARENERGY = "s3-total-solar-energy";
-    public static final String CHANNEL_S3RELAYSTATUS = "s3-relay-status";
-    public static final String CHANNEL_S3TEMPERATURE = "s3-temperature";
-    public static final String CHANNEL_S3FAULTCODE = "s3-fault-code";
-    public static final String CHANNEL_S3DCLINKVOLTAGE = "s3-dc-link-voltage";
-    public static final String CHANNEL_S3TIMESTAMP = "s3-timestamp";
-    public static final String CHANNEL_S4ID = "s4-id";
-    public static final String CHANNEL_S4PVVOLTAGE = "s4-pv-voltage";
-    public static final String CHANNEL_S4PVCURRENT = "s4-pv-current";
-    public static final String CHANNEL_S4TOTALSOLARENERGY = "s4-total-solar-energy";
-    public static final String CHANNEL_S4RELAYSTATUS = "s4-relay-status";
-    public static final String CHANNEL_S4TEMPERATURE = "s4-temperature";
-    public static final String CHANNEL_S4FAULTCODE = "s4-fault-code";
-    public static final String CHANNEL_S4DCLINKVOLTAGE = "s4-dc-link-voltage";
-    public static final String CHANNEL_S4TIMESTAMP = "s4-timestamp";
-
     // List of ESO Channel ids
     public static final String CHANNEL_ESOID = "eso-id";
     public static final String CHANNEL_ESOVOLTAGEBATTERY = "eso-voltage-battery";

@@ -13,6 +13,8 @@
 package org.openhab.binding.ferroamp.internal.api;
 
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
@@ -29,7 +31,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 /**
  * The {@link FerroampMqttCommunication} is responsible for communication with Ferroamp-system's Mqtt-broker.
@@ -41,18 +46,13 @@ import com.google.gson.JsonObject;
 @NonNullByDefault
 public class FerroampMqttCommunication implements MqttMessageSubscriber {
     public static String[] ehubChannelsUpdateValues = new String[0];
-    public static String[] ssoS1ChannelsUpdateValues = new String[0];
-    public static String[] ssoS2ChannelsUpdateValues = new String[0];
-    public static String[] ssoS3ChannelsUpdateValues = new String[0];
-    public static String[] ssoS4ChannelsUpdateValues = new String[0];
+
+    public Map<String, @Nullable String>[] ssoChannelsUpdateValues = new HashMap[9];
+
     public static String[] esoChannelsUpdateValues = new String[0];
     public static String[] esmChannelsUpdateValues = new String[0];
 
     public static boolean isSsoChecked = false;
-    public static String ssoS1IdCheck = "";
-    public static String ssoS2IdCheck = "";
-    public static String ssoS3IdCheck = "";
-    public static String ssoS4IdCheck = "";
 
     private final static Logger logger = LoggerFactory.getLogger(FerroampMqttCommunication.class);
 
@@ -96,7 +96,7 @@ public class FerroampMqttCommunication implements MqttMessageSubscriber {
             processIncomingJsonMessageEhub(topic, new String(payload, StandardCharsets.UTF_8));
         }
         if (FerroampBindingConstants.SSO_TOPIC.equals(topic)) {
-            processIncomingJsonMessageSso(topic, new String(payload, StandardCharsets.UTF_8));
+            processIncomingJsonMessageSso(new String(payload, StandardCharsets.UTF_8));
         }
         if (FerroampBindingConstants.ESO_TOPIC.equals(topic)) {
             processIncomingJsonMessageEso(topic, new String(payload, StandardCharsets.UTF_8));
@@ -347,135 +347,23 @@ public class FerroampMqttCommunication implements MqttMessageSubscriber {
         ehubChannelsUpdateValues = ehubChannelPostsValue;
     }
 
+    public static Map<String, @Nullable String> extractKeyValuePairs(String json, int ssoIndex) {
+        Map<String, @Nullable String> result = new HashMap<>();
+        JsonArray arr = JsonParser.parseString(json).getAsJsonArray();
+        JsonObject obj = arr.get(ssoIndex).getAsJsonObject();
+        for (Map.Entry<String, JsonElement> entry : obj.entrySet()) {
+            JsonObject valueObj = entry.getValue().getAsJsonObject();
+            String value = valueObj.has("val") ? valueObj.get("val").getAsString() : null;
+            result.put(entry.getKey(), value);
+        }
+        return result;
+    }
+
     // Prepare actual Json-topic Sso-messages and update values for channels
-    public void processIncomingJsonMessageSso(String topic, String messageJsonSso) {
-        String[] ssoS1ChannelPostsValue = new String[9]; // Array for SSOS1 ( Solar String Optimizer ) Posts
-        String[] ssoS2ChannelPostsValue = new String[9]; // Array for SSOS2 ( Solar String Optimizer ) Posts
-        String[] ssoS3ChannelPostsValue = new String[9]; // Array for SSOS3 ( Solar String Optimizer ) Posts
-        String[] ssoS4ChannelPostsValue = new String[9]; // Array for SSOS4 ( Solar String Optimizer ) Posts
-        String jsonElementsStringTempS1 = "";
-        String jsonElementsStringTempS2 = "";
-        String jsonElementsStringTempS3 = "";
-        String jsonElementsStringTempS4 = "";
-
-        // Sort out the respective message for the different Sso's
-        JsonObject jsonElementsObjectSsoS1 = new Gson().fromJson(messageJsonSso, JsonObject.class);
-        Objects.requireNonNull(jsonElementsObjectSsoS1, "JsonObject jsonElementsObjectSsoS1 cannot be null");
-        jsonElementsStringTempS1 = jsonElementsObjectSsoS1.get(SsoJsonElements.getJsonElementsSso().get(0)).toString();
-        GetGeneralValues idS1 = new Gson().fromJson(jsonElementsStringTempS1, GetGeneralValues.class);
-        GetGeneralValues idSso = new Gson().fromJson(jsonElementsStringTempS1, GetGeneralValues.class);
-
-        if (idSso != null) {
-            if (isSsoChecked == false) {
-                int i = 0;
-                while (i <= 3) {
-                    if (ssoS1IdCheck.isBlank() && ssoS2IdCheck.isBlank() && ssoS3IdCheck.isBlank()
-                            && ssoS4IdCheck.isBlank()) {
-                        ssoS1IdCheck = idSso.getVal();
-                        break;
-                    }
-                    if (!ssoS1IdCheck.isBlank() && ssoS2IdCheck.isBlank() && ssoS3IdCheck.isBlank()
-                            && ssoS4IdCheck.isBlank()) {
-                        if (idSso.getVal().equals(ssoS1IdCheck)) {
-                            break;
-                        }
-                        ssoS2IdCheck = idSso.getVal();
-                    }
-                    if (!ssoS1IdCheck.isBlank() && !ssoS2IdCheck.isBlank() && ssoS3IdCheck.isBlank()
-                            && ssoS4IdCheck.isBlank()) {
-                        if (idSso.getVal().equals(ssoS1IdCheck) || idSso.getVal().equals(ssoS2IdCheck)) {
-                            break;
-                        }
-                        ssoS3IdCheck = idSso.getVal();
-                    }
-                    if (!ssoS1IdCheck.isBlank() && !ssoS2IdCheck.isBlank() && !ssoS3IdCheck.isBlank()
-                            && ssoS4IdCheck.isBlank()) {
-                        if (idSso.getVal().equals(ssoS1IdCheck) || idSso.getVal().equals(ssoS2IdCheck)
-                                || idSso.getVal().equals(ssoS3IdCheck)) {
-                            break;
-                        }
-                        ssoS4IdCheck = idSso.getVal();
-                    }
-                    i++;
-                }
-            }
-
-            // Fetch, check and update values for Sso1
-            if (idS1 != null) {
-                if (idS1.getVal().equals(ssoS1IdCheck)) {
-                    int ssoS1Counter = 0;
-                    while (ssoS1Counter <= 8) {
-                        jsonElementsStringTempS1 = jsonElementsObjectSsoS1
-                                .get(SsoJsonElements.getJsonElementsSso().get(ssoS1Counter)).toString();
-                        ssoS1ChannelPostsValue[ssoS1Counter] = GetGeneralValueHelperSso(jsonElementsStringTempS1);
-                        ssoS1Counter++;
-                    }
-                    ssoS1ChannelsUpdateValues = ssoS1ChannelPostsValue;
-                }
-            }
-
-            JsonObject jsonElementsObjectSsoS2 = new Gson()
-                    .fromJson(new Gson().fromJson(messageJsonSso, JsonObject.class), JsonObject.class);
-            Objects.requireNonNull(jsonElementsObjectSsoS2, "JsonObject jsonElementsObjectSsoS2 cannot be null");
-            jsonElementsStringTempS2 = jsonElementsObjectSsoS2.get(SsoJsonElements.getJsonElementsSso().get(0))
-                    .toString();
-            GetGeneralValues idS2 = new Gson().fromJson(jsonElementsStringTempS2, GetGeneralValues.class);
-
-            // Fetch, check and update values for Sso2
-            if (idS2 != null) {
-                if (idS2.getVal().equals(ssoS2IdCheck)) {
-                    int ssoS2Counter = 0;
-                    while (ssoS2Counter <= 8) {
-                        jsonElementsStringTempS2 = jsonElementsObjectSsoS2
-                                .get(SsoJsonElements.getJsonElementsSso().get(ssoS2Counter)).toString();
-                        ssoS2ChannelPostsValue[ssoS2Counter] = GetGeneralValueHelperSso(jsonElementsStringTempS2);
-                        ssoS2Counter++;
-                    }
-                    ssoS2ChannelsUpdateValues = ssoS2ChannelPostsValue;
-                }
-            }
-
-            JsonObject jsonElementsObjectSsoS3 = new Gson()
-                    .fromJson(new Gson().fromJson(messageJsonSso, JsonObject.class), JsonObject.class);
-            Objects.requireNonNull(jsonElementsObjectSsoS3, "JsonObject jsonElementsObjectSsoS3 cannot be null");
-            jsonElementsStringTempS3 = jsonElementsObjectSsoS3.get(SsoJsonElements.getJsonElementsSso().get(0))
-                    .toString();
-            GetGeneralValues idS3 = new Gson().fromJson(jsonElementsStringTempS3, GetGeneralValues.class);
-
-            // Fetch, check and update values for Sso3
-            if (idS3 != null) {
-                if (idS3.getVal().equals(ssoS3IdCheck)) {
-                    int ssoS3Counter = 0;
-                    while (ssoS3Counter <= 8) {
-                        jsonElementsStringTempS3 = jsonElementsObjectSsoS3
-                                .get(SsoJsonElements.getJsonElementsSso().get(ssoS3Counter)).toString();
-                        ssoS3ChannelPostsValue[ssoS3Counter] = GetGeneralValueHelperSso(jsonElementsStringTempS3);
-                        ssoS3Counter++;
-                    }
-                    ssoS3ChannelsUpdateValues = ssoS3ChannelPostsValue;
-                }
-            }
-
-            JsonObject jsonElementsObjectSsoS4 = new Gson()
-                    .fromJson(new Gson().fromJson(messageJsonSso, JsonObject.class), JsonObject.class);
-            Objects.requireNonNull(jsonElementsObjectSsoS4, "JsonObject jsonElementsObjectSsoS4 cannot be null");
-            jsonElementsStringTempS4 = jsonElementsObjectSsoS4.get(SsoJsonElements.getJsonElementsSso().get(0))
-                    .toString();
-            GetGeneralValues idS4 = new Gson().fromJson(jsonElementsStringTempS4, GetGeneralValues.class);
-
-            // Fetch, check and update values for Sso4
-            if (idS4 != null) {
-                if (idS4.getVal().equals(ssoS4IdCheck)) {
-                    int ssoS4Counter = 0;
-                    while (ssoS4Counter <= 8) {
-                        jsonElementsStringTempS4 = jsonElementsObjectSsoS4
-                                .get(SsoJsonElements.getJsonElementsSso().get(ssoS4Counter)).toString();
-                        ssoS4ChannelPostsValue[ssoS4Counter] = GetGeneralValueHelperSso(jsonElementsStringTempS4);
-                        ssoS4Counter++;
-                    }
-                    ssoS4ChannelsUpdateValues = ssoS4ChannelPostsValue;
-                }
-            }
+    public void processIncomingJsonMessageSso(String messageJsonSso) {
+        JsonArray ssoArray = JsonParser.parseString(messageJsonSso).getAsJsonArray();
+        for (int ssoIndex = 0; ssoIndex < ssoArray.size(); ssoIndex++) {
+            ssoChannelsUpdateValues[ssoIndex] = extractKeyValuePairs(messageJsonSso, ssoIndex);
         }
     }
 
@@ -549,15 +437,6 @@ public class FerroampMqttCommunication implements MqttMessageSubscriber {
         return returnLxEhub;
     }
 
-    public String GetGeneralValueHelperSso(String jsonElementsStringSso) {
-        String returnValueSso = "";
-        GetGeneralValues objectSso = new Gson().fromJson(jsonElementsStringSso, GetGeneralValues.class);
-        if (objectSso != null) {
-            returnValueSso = objectSso.getVal().toString();
-        }
-        return returnValueSso;
-    }
-
     public String GetGeneralValueHelperEso(String jsonElementsStringEso, String esoParameterName) {
         String returnValueEso = "";
         GetGeneralValues objectEso = new Gson().fromJson(jsonElementsStringEso, GetGeneralValues.class);
@@ -590,40 +469,13 @@ public class FerroampMqttCommunication implements MqttMessageSubscriber {
         return ehubChannelsUpdateValues;
     }
 
-    public @Nullable static String[] getSsoS1ChannelUpdateValues() {
+    public Map<String, @Nullable String> getSsoChannelUpdateValues(int ssoIndex) {
         try {
-            return ssoS1ChannelsUpdateValues;
+            return ssoChannelsUpdateValues[ssoIndex];
         } catch (Exception e) {
-            logger.debug("Failed at update of SsoS1 channel values");
+            logger.debug("Failed at update of Sso channel values");
         }
-        return ssoS1ChannelsUpdateValues;
-    }
-
-    public @Nullable static String[] getSsoS2ChannelUpdateValues() {
-        try {
-            return ssoS2ChannelsUpdateValues;
-        } catch (Exception e) {
-            logger.debug("Failed at update of SsoS2 channel values");
-        }
-        return ssoS2ChannelsUpdateValues;
-    }
-
-    public @Nullable static String[] getSsoS3ChannelUpdateValues() {
-        try {
-            return ssoS3ChannelsUpdateValues;
-        } catch (Exception e) {
-            logger.debug("Failed at update of SsoS3 channel values");
-        }
-        return ssoS3ChannelsUpdateValues;
-    }
-
-    public @Nullable static String[] getSsoS4ChannelUpdateValues() {
-        try {
-            return ssoS4ChannelsUpdateValues;
-        } catch (Exception e) {
-            logger.debug("Failed at update of SsoS4 channel values");
-        }
-        return ssoS4ChannelsUpdateValues;
+        return new HashMap<>();
     }
 
     public @Nullable static String[] getEsoChannelUpdateValues() {

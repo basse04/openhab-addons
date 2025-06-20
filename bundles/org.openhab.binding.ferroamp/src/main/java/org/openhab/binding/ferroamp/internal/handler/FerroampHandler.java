@@ -14,6 +14,7 @@ package org.openhab.binding.ferroamp.internal.handler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ScheduledFuture;
@@ -23,7 +24,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.ferroamp.internal.FerroampBindingConstants;
 import org.openhab.binding.ferroamp.internal.api.FerroampMqttCommunication;
-import org.openhab.binding.ferroamp.internal.config.FerroampChannelConfiguration;
+import org.openhab.binding.ferroamp.internal.config.ChannelMapping;
 import org.openhab.binding.ferroamp.internal.config.FerroampConfiguration;
 import org.openhab.core.io.transport.mqtt.MqttBrokerConnection;
 import org.openhab.core.io.transport.mqtt.MqttMessageSubscriber;
@@ -52,13 +53,9 @@ public class FerroampHandler extends BaseThingHandler implements MqttMessageSubs
     FerroampMqttCommunication ferroampMqttCommunication = new FerroampMqttCommunication();
     FerroampConfiguration ferroampConfig = new FerroampConfiguration();
 
-    private static List<FerroampChannelConfiguration> channelConfigEhub = new ArrayList<>();
-    private static List<FerroampChannelConfiguration> channelConfigSsoS1 = new ArrayList<>();
-    private static List<FerroampChannelConfiguration> channelConfigSsoS2 = new ArrayList<>();
-    private static List<FerroampChannelConfiguration> channelConfigSsoS3 = new ArrayList<>();
-    private static List<FerroampChannelConfiguration> channelConfigSsoS4 = new ArrayList<>();
-    private static List<FerroampChannelConfiguration> channelConfigEso = new ArrayList<>();
-    private static List<FerroampChannelConfiguration> channelConfigEsm = new ArrayList<>();
+    private static List<ChannelMapping> channelConfigEhub = new ArrayList<>();
+    private static List<ChannelMapping> channelConfigEso = new ArrayList<>();
+    private static List<ChannelMapping> channelConfigEsm = new ArrayList<>();
 
     private @Nullable ScheduledFuture<?> ferroampPoller;
 
@@ -92,13 +89,9 @@ public class FerroampHandler extends BaseThingHandler implements MqttMessageSubs
         ferroampConfig = getConfigAs(FerroampConfiguration.class);
 
         // Set channel configuration parameters
-        channelConfigEhub = FerroampChannelConfiguration.getChannelConfigurationEhub();
-        channelConfigSsoS1 = FerroampChannelConfiguration.getChannelConfigurationSsoS1();
-        channelConfigSsoS2 = FerroampChannelConfiguration.getChannelConfigurationSsoS2();
-        channelConfigSsoS3 = FerroampChannelConfiguration.getChannelConfigurationSsoS3();
-        channelConfigSsoS4 = FerroampChannelConfiguration.getChannelConfigurationSsoS4();
-        channelConfigEso = FerroampChannelConfiguration.getChannelConfigurationEso();
-        channelConfigEsm = FerroampChannelConfiguration.getChannelConfigurationEsm();
+        channelConfigEhub = ChannelMapping.getChannelConfigurationEhub();
+        channelConfigEso = ChannelMapping.getChannelConfigurationEso();
+        channelConfigEsm = ChannelMapping.getChannelConfigurationEsm();
 
         if (!ferroampConfig.hostName.isBlank() || !ferroampConfig.password.isBlank()
                 || !ferroampConfig.userName.isBlank()) {
@@ -169,67 +162,20 @@ public class FerroampHandler extends BaseThingHandler implements MqttMessageSubs
         ehubUpdateChannels = FerroampMqttCommunication.getEhubChannelUpdateValues();
         if (ehubUpdateChannels.length > 0) {
             int channelValuesCounterEhub = 0;
-            for (FerroampChannelConfiguration cConfig : channelConfigEhub) {
-                String ehubChannel = FerroampChannelConfiguration.id;
+            for (ChannelMapping cConfig : channelConfigEhub) {
+                String ehubChannel = cConfig.id;
                 State ehubState = StringType.valueOf(ehubUpdateChannels[channelValuesCounterEhub]);
                 updateState(ehubChannel, ehubState);
                 channelValuesCounterEhub++;
             }
         }
 
-        String[] ssoS1UpdateChannels = new String[9];
-        ssoS1UpdateChannels = FerroampMqttCommunication.getSsoS1ChannelUpdateValues();
-        if (ssoS1UpdateChannels.length > 0) {
-            int channelValuesCounterSsoS1 = 0;
-            if (ssoS1UpdateChannels.length <= 9) {
-                for (FerroampChannelConfiguration cConfig : channelConfigSsoS1) {
-                    String ssoS1Channel = FerroampChannelConfiguration.id;
-                    State ssoS1State = StringType.valueOf(ssoS1UpdateChannels[channelValuesCounterSsoS1]);
-                    updateState(ssoS1Channel, ssoS1State);
-                    channelValuesCounterSsoS1++;
-                }
-            }
-        }
-
-        String[] ssoS2UpdateChannels = new String[9];
-        ssoS2UpdateChannels = FerroampMqttCommunication.getSsoS2ChannelUpdateValues();
-        if (ssoS2UpdateChannels.length > 0) {
-            int channelValuesCounterSsoS2 = 0;
-            if (ssoS2UpdateChannels.length <= 9) {
-                for (FerroampChannelConfiguration cConfig : channelConfigSsoS2) {
-                    String ssoS2Channel = FerroampChannelConfiguration.id;
-                    State ssoS2State = StringType.valueOf(ssoS2UpdateChannels[channelValuesCounterSsoS2]);
-                    updateState(ssoS2Channel, ssoS2State);
-                    channelValuesCounterSsoS2++;
-                }
-            }
-        }
-
-        String[] ssoS3UpdateChannels = new String[9];
-        ssoS3UpdateChannels = FerroampMqttCommunication.getSsoS3ChannelUpdateValues();
-        if (ssoS3UpdateChannels.length > 0) {
-            int channelValuesCounterSsoS3 = 0;
-            if (ssoS3UpdateChannels.length <= 9) {
-                for (FerroampChannelConfiguration cConfig : channelConfigSsoS3) {
-                    String ssoS3Channel = FerroampChannelConfiguration.id;
-                    State ssoS3State = StringType.valueOf(ssoS3UpdateChannels[channelValuesCounterSsoS3]);
-                    updateState(ssoS3Channel, ssoS3State);
-                    channelValuesCounterSsoS3++;
-                }
-            }
-        }
-
-        String[] ssoS4UpdateChannels = new String[9];
-        ssoS4UpdateChannels = FerroampMqttCommunication.getSsoS4ChannelUpdateValues();
-        if (ssoS4UpdateChannels.length > 0) {
-            int channelValuesCounterSsoS4 = 0;
-            if (ssoS4UpdateChannels.length <= 9) {
-                for (FerroampChannelConfiguration cConfig : channelConfigSsoS4) {
-                    String ssoS4Channel = FerroampChannelConfiguration.id;
-                    State ssoS4State = StringType.valueOf(ssoS4UpdateChannels[channelValuesCounterSsoS4]);
-                    updateState(ssoS4Channel, ssoS4State);
-                    channelValuesCounterSsoS4++;
-                }
+        int ssoNumber = 4; // Number of SSO's
+        for (int ssoIndex = 0; ssoIndex < ssoNumber; ssoNumber++) {
+            Map<String, @Nullable String> keyValueMap = ferroampMqttCommunication.getSsoChannelUpdateValues(ssoIndex);
+            for (ChannelMapping mapping : ChannelMapping.getSSOChannelMapping()) {
+                State newState = StringType.valueOf(keyValueMap.get(mapping.jsonKey));
+                updateState("sso-" + ssoIndex + 1 + "#" + mapping.id, newState);
             }
         }
 
@@ -238,8 +184,8 @@ public class FerroampHandler extends BaseThingHandler implements MqttMessageSubs
         if (esoUpdateChannels.length > 0) {
             int channelValuesCounterEso = 0;
             if (esoUpdateChannels.length <= 9) {
-                for (FerroampChannelConfiguration cConfig : channelConfigEso) {
-                    String esoChannel = FerroampChannelConfiguration.id;
+                for (ChannelMapping cConfig : channelConfigEso) {
+                    String esoChannel = cConfig.id;
                     State esoState = StringType.valueOf(esoUpdateChannels[channelValuesCounterEso]);
                     updateState(esoChannel, esoState);
                     channelValuesCounterEso++;
@@ -252,8 +198,8 @@ public class FerroampHandler extends BaseThingHandler implements MqttMessageSubs
         if (esmUpdateChannels.length > 0) {
             int channelValuesCounterEsm = 0;
             if (esmUpdateChannels.length <= 9) {
-                for (FerroampChannelConfiguration cConfig : channelConfigEsm) {
-                    String esmChannel = FerroampChannelConfiguration.id;
+                for (ChannelMapping cConfig : channelConfigEsm) {
+                    String esmChannel = cConfig.id;
                     State esmState = StringType.valueOf(esmUpdateChannels[channelValuesCounterEsm]);
                     updateState(esmChannel, esmState);
                     channelValuesCounterEsm++;
