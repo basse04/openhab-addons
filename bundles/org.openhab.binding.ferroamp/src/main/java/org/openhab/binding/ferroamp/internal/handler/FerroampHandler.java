@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2010-2025 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -141,7 +141,7 @@ public class FerroampHandler extends BaseThingHandler {
         Map<String, @Nullable String> ehubKeyValueMap = ferroampMqttCommunication.ehubChannelsUpdateValues;
         for (ChannelMapping mapping : ChannelMapping.getESOMapping()) {
             State newState = StringType.valueOf(ehubKeyValueMap.get(mapping.jsonPath));
-            updateState(mapping.id, newState);
+            updateState("ehub" + mapping.id, newState);
         }
 
         // TODO the SSO need to have a consistent ordering of the SSO's (by some key?), so that the channel id's are
