@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2010-2025 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.ferroamp.internal;
+package org.openhab.binding.ferroamp.internal.config;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 
