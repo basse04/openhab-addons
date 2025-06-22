@@ -24,16 +24,14 @@ import org.openhab.binding.ferroamp.internal.DataUtil;
 import org.openhab.binding.ferroamp.internal.FerroampBindingConstants;
 import org.openhab.binding.ferroamp.internal.api.FerroampMqttCommunication;
 
-import com.google.gson.Gson;
-
 /**
  * @author Leo Siepel - Initial contribution
  */
 @NonNullByDefault
 class FerroampMqttCommunicationTest {
 
-    private FerroampMqttCommunication communication = new FerroampMqttCommunication(null, null, null, 1);
-    private Gson gson = new Gson();
+    private FerroampMqttCommunication communication = new FerroampMqttCommunication("fakseUser", "fakePassword",
+            "fakeHost", 1);
 
     @Test
     void testProcessIncomingJsonMessageSso_ValidMessageForSso1() throws IOException {

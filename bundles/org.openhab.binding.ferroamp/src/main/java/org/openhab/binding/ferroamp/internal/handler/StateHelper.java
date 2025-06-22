@@ -18,7 +18,6 @@ import java.time.format.DateTimeParseException;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
-import org.openhab.binding.ferroamp.internal.api.FerroampMqttCommunication;
 import org.openhab.binding.ferroamp.internal.config.ChannelMapping;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.QuantityType;
@@ -38,6 +37,9 @@ import org.openhab.core.types.UnDefType;
 public class StateHelper {
 
     public static State convertToState(ChannelMapping mapping, @Nullable String value) {
+        if (value == null || value.isEmpty()) {
+            return UnDefType.NULL;
+        }
         if (Units.HERTZ.equals(mapping.unit) || //
                 Units.PERCENT.equals(mapping.unit) || //
                 Units.VOLT.equals(mapping.unit) || //
@@ -56,10 +58,7 @@ public class StateHelper {
         return UnDefType.UNDEF;
     }
 
-    private static boolean isIso8601(@Nullable String value) {
-        if (value == null || value.isEmpty()) {
-            return false;
-        }
+    private static boolean isIso8601(String value) {
         try {
             Instant.parse(value);
             return true;
