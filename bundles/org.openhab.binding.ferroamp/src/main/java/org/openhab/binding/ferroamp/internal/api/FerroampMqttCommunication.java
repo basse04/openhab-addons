@@ -14,6 +14,7 @@ package org.openhab.binding.ferroamp.internal.api;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,6 +22,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.ferroamp.internal.FerroampBindingConstants;
 import org.openhab.core.io.transport.mqtt.MqttBrokerConnection;
+import org.openhab.core.io.transport.mqtt.MqttConnectionState;
 import org.openhab.core.io.transport.mqtt.MqttMessageSubscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,10 +43,7 @@ import com.google.gson.JsonSyntaxException;
 @NonNullByDefault
 public class FerroampMqttCommunication implements MqttMessageSubscriber {
 
-    public Map<String, @Nullable String>[] ssoChannelsUpdateValues = new ConcurrentHashMap[9];
-    public Map<String, @Nullable String> esmChannelsUpdateValues = new ConcurrentHashMap<>();
-    public Map<String, @Nullable String> esoChannelsUpdateValues = new ConcurrentHashMap<>();
-    public Map<String, @Nullable String> ehubChannelsUpdateValues = new ConcurrentHashMap<>();
+    private @Nullable FerroAmpUpdateListener ferroAmpUpdateListeners;
 
     private final static Logger logger = LoggerFactory.getLogger(FerroampMqttCommunication.class);
     private final MqttBrokerConnection ferroampConnection;
@@ -63,6 +62,14 @@ public class FerroampMqttCommunication implements MqttMessageSubscriber {
         ferroampConnection.subscribe(FerroampBindingConstants.ESM_TOPIC, this);
     }
 
+    public void registerFerroAmpUpdateListener(FerroAmpUpdateListener listener) {
+        ferroAmpUpdateListeners = listener;
+    }
+
+    public void unregisterFerroAmpUpdateListener() {
+        ferroAmpUpdateListeners = null;
+    }
+
     // Handles request topic
     public void sendPublishedTopic(String payload) {
         ferroampConnection.publish(FerroampBindingConstants.REQUEST_TOPIC, payload.getBytes(), 1, false);
@@ -71,33 +78,51 @@ public class FerroampMqttCommunication implements MqttMessageSubscriber {
     // Capture actual Json-topic message
     @Override
     public void processMessage(String topic, byte[] payload) {
+        DataType type = DataType.UNKNOWN;
+        Map<String, @Nullable String> keyValueMap = new HashMap<>();
+        String message = new String(payload, StandardCharsets.UTF_8);
         if (FerroampBindingConstants.EHUB_TOPIC.equals(topic)) {
-            processIncomingJsonMessageEhub(new String(payload, StandardCharsets.UTF_8));
+            keyValueMap = extractKeyValuePairs(message, null);
+            type = DataType.EHUB;
         } else if (FerroampBindingConstants.SSO_TOPIC.equals(topic)) {
-            processIncomingJsonMessageSso(new String(payload, StandardCharsets.UTF_8));
+            keyValueMap = processIncomingJsonMessageSso(new String(payload, StandardCharsets.UTF_8));
+            type = DataType.SSO;
         } else if (FerroampBindingConstants.ESO_TOPIC.equals(topic)) {
-            processIncomingJsonMessageEso(new String(payload, StandardCharsets.UTF_8));
+            keyValueMap = extractKeyValuePairs(message, null);
+            type = DataType.ESO;
         } else if (FerroampBindingConstants.ESM_TOPIC.equals(topic)) {
-            processIncomingJsonMessageEsm(new String(payload, StandardCharsets.UTF_8));
+            keyValueMap = extractKeyValuePairs(message, null);
+            type = DataType.ESM;
         } else {
             logger.warn("Received message on unknown topic: {}", topic);
         }
+        FerroAmpUpdateListener ferroAmpUpdateListeners = this.ferroAmpUpdateListeners;
+        if (ferroAmpUpdateListeners != null && type != DataType.UNKNOWN) {
+            ferroAmpUpdateListeners.onFerroAmpUpdate(type, keyValueMap);
+        }
     }
 
-    public void processIncomingJsonMessageEhub(String messageJsonEhub) {
-        esmChannelsUpdateValues = extractKeyValuePairs(messageJsonEhub, 0);
-    }
-
-    public Map<String, @Nullable String> extractKeyValuePairs(String json, int deviceIndex) {
+    private Map<String, @Nullable String> extractKeyValuePairs(String json, @Nullable Integer deviceIndex) {
         Map<String, @Nullable String> result = new ConcurrentHashMap<>();
         JsonArray arr;
+        JsonObject obj;
         try {
             arr = JsonParser.parseString(json).getAsJsonArray();
+            if (deviceIndex != null && deviceIndex > -1 && deviceIndex < arr.size()) {
+                obj = arr.get(deviceIndex).getAsJsonObject();
+            } else {
+                obj = JsonParser.parseString(json).getAsJsonObject();
+            }
         } catch (JsonSyntaxException e) {
             logger.warn("Failed to parse JSON: {}", e.getMessage());
             return Collections.emptyMap();
+        } catch (IllegalStateException e) {
+            logger.debug("Failed to parse JSON: {}", e.getMessage());
+            obj = JsonParser.parseString(json).getAsJsonObject();
+        } catch (IndexOutOfBoundsException e) {
+            logger.warn("Device index {} out of bounds for JSON array: {}", deviceIndex, e.getMessage());
+            return Collections.emptyMap();
         }
-        JsonObject obj = arr.get(deviceIndex).getAsJsonObject();
 
         for (Map.Entry<String, JsonElement> entry : obj.entrySet()) {
             String key = entry.getKey();
@@ -128,21 +153,16 @@ public class FerroampMqttCommunication implements MqttMessageSubscriber {
     }
 
     // Prepare actual Json-topic Sso-messages and update values for channels
-    void processIncomingJsonMessageSso(String messageJsonSso) {
+    private Map<String, @Nullable String> processIncomingJsonMessageSso(String messageJsonSso) {
         JsonArray ssoArray = JsonParser.parseString(messageJsonSso).getAsJsonArray();
+        Map<String, @Nullable String> keyValueMap = new HashMap<>();
         for (int ssoIndex = 0; ssoIndex < ssoArray.size(); ssoIndex++) {
-            ssoChannelsUpdateValues[ssoIndex] = extractKeyValuePairs(messageJsonSso, ssoIndex);
+            Map<String, @Nullable String> extracted = extractKeyValuePairs(messageJsonSso, ssoIndex);
+            for (Map.Entry<String, @Nullable String> entry : extracted.entrySet()) {
+                keyValueMap.put(ssoIndex + "-" + entry.getKey(), entry.getValue());
+            }
         }
-    }
-
-    // Prepare actual Json-topic Eso-message and update values for channels
-    void processIncomingJsonMessageEso(String messageJsonEso) {
-        esoChannelsUpdateValues = extractKeyValuePairs(messageJsonEso, 0);
-    }
-
-    // Prepare actual Json-topic Esm-message and update values for channels
-    void processIncomingJsonMessageEsm(String messageJsonEsm) {
-        esmChannelsUpdateValues = extractKeyValuePairs(messageJsonEsm, 0);
+        return keyValueMap;
     }
 
     public void stop() {
@@ -158,6 +178,6 @@ public class FerroampMqttCommunication implements MqttMessageSubscriber {
     }
 
     public boolean isConnected() {
-        return !"DISCONNECTED".equals(ferroampConnection.connectionState().toString());
+        return !MqttConnectionState.DISCONNECTED.equals(ferroampConnection.connectionState());
     }
 }

@@ -1,4 +1,15 @@
-
+/*
+ * Copyright (c) 2010-2025 Contributors to the openHAB project
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
 package org.openhab.binding.ferroamp.internal.handler;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -7,6 +18,7 @@ import java.time.ZoneOffset;
 
 import javax.measure.Unit;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.junit.jupiter.api.Test;
 import org.openhab.binding.ferroamp.internal.config.ChannelMapping;
 import org.openhab.core.library.types.DateTimeType;
@@ -16,7 +28,11 @@ import org.openhab.core.library.unit.Units;
 import org.openhab.core.types.State;
 import org.openhab.core.types.UnDefType;
 
-class StateHelperTest {
+/**
+ * @author Leo Siepel - Initial contribution
+ */
+@NonNullByDefault
+public class StateHelperTest {
 
     private ChannelMapping mappingWithUnit(Unit<?> unit) {
         return new ChannelMapping("test-channel", unit, "unknown.path");
@@ -98,6 +114,7 @@ class StateHelperTest {
     @Test
     void testConvertToState_NullValue() {
         ChannelMapping mapping = mappingWithUnit(Units.HERTZ);
-        assertThrows(NullPointerException.class, () -> StateHelper.convertToState(mapping, null));
+        State state = StateHelper.convertToState(mapping, null);
+        assertEquals(UnDefType.NULL, state);
     }
 }
