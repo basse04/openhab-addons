@@ -21,6 +21,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.ferroamp.internal.FerroampBindingConstants;
 import org.openhab.binding.ferroamp.internal.api.FerroampMqttCommunication;
+import org.openhab.binding.ferroamp.internal.api.StateHelper;
 import org.openhab.binding.ferroamp.internal.config.ChannelMapping;
 import org.openhab.binding.ferroamp.internal.config.FerroampConfiguration;
 import org.openhab.core.library.types.StringType;
@@ -140,7 +141,7 @@ public class FerroampHandler extends BaseThingHandler {
 
         Map<String, @Nullable String> ehubKeyValueMap = ferroampMqttCommunication.ehubChannelsUpdateValues;
         for (ChannelMapping mapping : ChannelMapping.getESOMapping()) {
-            State newState = StringType.valueOf(ehubKeyValueMap.get(mapping.jsonPath));
+            State newState = StateHelper.convertToState(mapping, ehubKeyValueMap.get(mapping.jsonPath));
             updateState("ehub" + mapping.id, newState);
         }
 
@@ -150,20 +151,20 @@ public class FerroampHandler extends BaseThingHandler {
         for (int ssoIndex = 0; ssoIndex < ssoNumber; ssoNumber++) {
             Map<String, @Nullable String> keyValueMap = ferroampMqttCommunication.ssoChannelsUpdateValues[ssoIndex];
             for (ChannelMapping mapping : ChannelMapping.getSSOMapping()) {
-                State newState = StringType.valueOf(keyValueMap.get(mapping.jsonPath));
+                State newState = StateHelper.convertToState(mapping, keyValueMap.get(mapping.jsonPath));
                 updateState("sso-" + ssoIndex + 1 + "#" + mapping.id, newState);
             }
         }
 
         Map<String, @Nullable String> esoKeyValueMap = ferroampMqttCommunication.esoChannelsUpdateValues;
         for (ChannelMapping mapping : ChannelMapping.getESOMapping()) {
-            State newState = StringType.valueOf(esoKeyValueMap.get(mapping.jsonPath));
+            State newState = StateHelper.convertToState(mapping, esoKeyValueMap.get(mapping.jsonPath));
             updateState("eso#" + mapping.id, newState);
         }
 
         Map<String, @Nullable String> esmKeyValueMap = ferroampMqttCommunication.esmChannelsUpdateValues;
         for (ChannelMapping mapping : ChannelMapping.getESMMapping()) {
-            State newState = StringType.valueOf(esmKeyValueMap.get(mapping.jsonPath));
+            State newState = StateHelper.convertToState(mapping, esmKeyValueMap.get(mapping.jsonPath));
             updateState("esm#" + mapping.id, newState);
         }
     }

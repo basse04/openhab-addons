@@ -14,7 +14,6 @@ package org.openhab.binding.ferroamp.internal.api;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -101,7 +100,7 @@ public class FerroampMqttCommunication implements MqttMessageSubscriber {
     }
 
     public Map<String, @Nullable String> extractKeyValuePairs(String json, int deviceIndex) {
-        Map<String, @Nullable String> result = new HashMap<>();
+        Map<String, @Nullable String> result = new ConcurrentHashMap<>();
         JsonArray arr;
         try {
             arr = JsonParser.parseString(json).getAsJsonArray();

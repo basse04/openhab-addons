@@ -14,19 +14,17 @@ package org.openhab.binding.ferroamp.internal.handler;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.eclipse.jdt.annotation.Nullable;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openhab.binding.ferroamp.internal.DataUtil;
+import org.openhab.binding.ferroamp.internal.FerroampBindingConstants;
 import org.openhab.binding.ferroamp.internal.api.FerroampMqttCommunication;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 /**
  * @author Leo Siepel - Initial contribution
@@ -34,49 +32,38 @@ import com.google.gson.JsonObject;
 @NonNullByDefault
 class FerroampMqttCommunicationTest {
 
-    private @Nullable FerroampMqttCommunication communication = null;// new FerroampMqttCommunication();
+    private FerroampMqttCommunication communication = new FerroampMqttCommunication(null, null, null, 1);
     private Gson gson = new Gson();
 
     @Test
-    @Disabled
     void testProcessIncomingJsonMessageSso_ValidMessageForSso1() throws IOException {
         String messageJsonSso = DataUtil.fromFile("sso.json");
 
-        // communication.processIncomingJsonMessageSso(messageJsonSso);
+        communication.processMessage(FerroampBindingConstants.SSO_TOPIC, messageJsonSso.getBytes());
 
         assertNotNull(communication.ssoChannelsUpdateValues);
         assertEquals(9, communication.ssoChannelsUpdateValues.length);
-        assertEquals("value1", communication.ssoChannelsUpdateValues[0]);
+        assertNotNull(communication.ssoChannelsUpdateValues[0]);
+        assertEquals("29.766", communication.ssoChannelsUpdateValues[0].get("temp"));
     }
 
     @Test
-    @Disabled
     void testProcessIncomingJsonMessageSso_InvalidMessage() {
         String messageJsonSso = "{}";
 
-        // communication.processIncomingJsonMessageSso(messageJsonSso);
-
-        assertNull(communication.ssoChannelsUpdateValues);
+        assertThrows(IllegalStateException.class,
+                () -> communication.processMessage(FerroampBindingConstants.SSO_TOPIC, messageJsonSso.getBytes()));
     }
 
     @Test
-    @Disabled
-    void testProcessIncomingJsonMessageSso_ValidMessageForSso2() {
-        String messageJsonSso = createValidSsoMessage("sso2");
+    void testProcessIncomingJsonMessageSso_ValidMessageForSso2() throws IOException {
+        String messageJsonSso = DataUtil.fromFile("multi_sso.json");
 
-        // communication.processIncomingJsonMessageSso(messageJsonSso);
+        communication.processMessage(FerroampBindingConstants.SSO_TOPIC, messageJsonSso.getBytes());
 
         assertNotNull(communication.ssoChannelsUpdateValues);
         assertEquals(9, communication.ssoChannelsUpdateValues.length);
-        assertEquals("value1", communication.ssoChannelsUpdateValues[0]);
-    }
-
-    private String createValidSsoMessage(String ssoId) {
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("0", ssoId);
-        for (int i = 1; i <= 8; i++) {
-            jsonObject.addProperty(String.valueOf(i), "value" + i);
-        }
-        return gson.toJson(jsonObject);
+        assertNotNull(communication.ssoChannelsUpdateValues[1]);
+        assertEquals("19.166", communication.ssoChannelsUpdateValues[1].get("temp"));
     }
 }
