@@ -11,14 +11,14 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 
-package org.openhab.binding.ferroamp.internal.api;
+package org.openhab.binding.ferroamp.internal.handler;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.time.format.DateTimeParseException;
-import java.util.Objects;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.openhab.binding.ferroamp.internal.api.FerroampMqttCommunication;
 import org.openhab.binding.ferroamp.internal.config.ChannelMapping;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.QuantityType;
@@ -48,7 +48,7 @@ public class StateHelper {
         }
         if (mapping.unit.equals(Units.ONE)) {
             if (isIso8601(value)) {
-                return new DateTimeType(Objects.requireNonNull(value));
+                return new DateTimeType(Instant.parse(value));
             } else {
                 return new StringType(value);
             }
@@ -61,7 +61,7 @@ public class StateHelper {
             return false;
         }
         try {
-            OffsetDateTime.parse(value);
+            Instant.parse(value);
             return true;
         } catch (DateTimeParseException e) {
             return false;
